@@ -1,0 +1,28 @@
+
+body{
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+	background-position:right top;
+	background-image: url(../img/bg.jpg) ;
+	background-size: 100ex;
+	
+
+} 
+#name{
+	width:350px; 
+	border:solid 2px #fff;
+}
+#one{
+	font-size: 40px;
+	font-family:serif,sans-serif,cursive,fantasy,monospace;
+	font-weight:bold;
+	color: #EB2A47;
+	
+	font-style: italic;
+}
+h3{
+	font-size: 30px;
+	font-family:serif,sans-serif,cursive,fantasy,monospace;
+	font-weight:bold;
+	color: #7B2BD8;
+}
