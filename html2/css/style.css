@@ -1,7 +1,7 @@
 .body{
 	background-color:#ffefd5;
 }
-#header{
+.header{
 	width: 100%;
 	font-family: 微軟正黑體;
 	text-align: center;
@@ -13,9 +13,19 @@
 	font-weight: bold;
 	padding-top: 20px;
 }
-#contant{
+.contant{
 	background-color: #9acd32;
 	border-radius: 10px;
 	margin-right: 10px;
 	
+}
+.ui-grid-a .ui-block-a
+{
+	margin:1%;
+	width:48%;
+}
+.ui-grid-a .ui-block-b
+{
+	margin:1%;
+	width:48%;
 }
