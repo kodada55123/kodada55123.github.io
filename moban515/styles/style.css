@@ -760,9 +760,10 @@ and (min-device-height: 801px){
 	font-size: 60px;
 	font-weight: bold;
 	padding-top: 20px;
-	font-family: 微軟正黑體;
+	font-family: 'Quicksand', sans-serif;
 	text-align: center;
 }
+
 
 
 
