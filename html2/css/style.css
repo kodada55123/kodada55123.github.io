@@ -1,17 +1,22 @@
-.body{
-	background-color:#ffefd5;
+#body{
+	background: -webkit-radial-gradient(ellipse,white,orange);
+background: -o-radial-gradient(ellipse,white,orange);
+background: -moz-radial-gradient(ellipse,white,orange);
+background: radial-gradient(ellipse,white,orange);
+	
 }
 #header{
 	width: 100%;
-	font-family: 微軟正黑體;
-	text-align: center;
-	background-color: #00bfff; 
+	margin-left: 15%;
+	
+	
 
 }
 .headerfont{
-	font-size: 40px;
+	font-size: 60px;
 	font-weight: bold;
 	padding-top: 20px;
+	font-family: 微軟正黑體;
 }
 #contant{
 	background-color: #9acd32;
