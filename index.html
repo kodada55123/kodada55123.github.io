@@ -1,32 +1,77 @@
-<html>
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>羊聚醉樂園｜活動資訊</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+  <body class="bg-slate-100">
+    <div id="root"></div>
 
-<head>
-    <title>myPod</title>
-    <style type="text/css">
-    body {
-        background-color: #eaf3da;
-    }
-    </style>
-</head>
+    <script type="text/babel">
+      const { useMemo, useState, useEffect } = React;
 
-<body>
-    <h1>Welcome to myPod</h1>
-    <p>
-        Welcome to the place to show off your iPod, wherever you might be. Wanna join the fun? All you need is any iPod, from the early classic iPod to the latest iPod Nano, the smallest iPod Shuffle to the largest iPod Photo, and a digital camera. Just take a snapshot of your iPod in your favorite location and we'll be glad to post it on myPod. So, what are you waiting for?
-    </p>
-    <h2>Seattle, Washington</h2>
-    <p>
-        Me and my iPod in Seattle! You can see rain clouds and the Space Needle. You can't see the 628 coffee shops.
-    </p>
-    <a href = "./html/seattle_video_med.html"><img src = "./thumbnails/seattle_video_med.jpg"></a>
-    <a href = "./html/seattle_shuffle.html"><img src = "./thumbnails/seattle_shuffle.jpg"></a>
-    <a href = "./html/seattle_classic.html"><img src = "./thumbnails/seattle_classic.jpg"></a>
-    <a href = "./html/seattle_downtown.html"><img src = "./thumbnails/seattle_downtown.jpg"></a>
-    <h2>Birmingham, England</h2>
-    <p>
-        Here are some iPod photos around Birmingham. We've obviously got some passionate folks over here who love their iPods. Check out the classic red British telephone box!
-    </p>
-    <a href = "./html/applestore.html"><img src="./thumbnails/applestore.jpg"></a>
-    <img src="./thumbnails/britain.jpg">
-</body>
-</html>
+      function Icon({ name, className = "h-4 w-4" }) {
+        useEffect(() => {
+          if (window.lucide) window.lucide.createIcons();
+        });
+        return <i data-lucide={name} className={className}></i>;
+      }
+
+      function EventInfoPage() {
+        const [tab, setTab] = useState("schedule");
+        const [carSearch, setCarSearch] = useState("");
+        const [bedSearch, setBedSearch] = useState("");
+
+        const heroImage =
+          "https://raw.githubusercontent.com/kodada55123/kodada55123.github.io/a3de853fe1dafa0afe5dbd3d19beb4dcd226d6ae/ChatGPT%20Image%202025%E5%B9%B411%E6%9C%8816%E6%97%A5%20%E4%B8%8B%E5%8D%8810_29_37.png";
+
+        const schedule = [
+          { time: "3/28 11:15", title: "福哥石窯雞羅東店 吃中餐", detail: "https://maps.app.goo.gl/rZBhn9SpTKiesr1B9" },
+          { time: "3/28 13:00", title: "新動市集", detail: "https://maps.app.goo.gl/Xq77Prub4FEQn8rc6" },
+          { time: "3/28 15:00", title: "預計入住", detail: "若可以提早會在群組與大家通知" },
+          { time: "3/28 15:00-15:20", title: "前往放行李", detail: "先到房間放置行李" },
+          { time: "3/28 15:20-15:30", title: "組長集合組員", detail: "各組長找到所有組員" },
+          { time: "3/28 15:30-17:00", title: "闖關遊戲", detail: "開始跑遊戲" },
+          { time: "3/28 17:00-18:00", title: "解謎遊戲", detail: "解謎遊戲開跑～～" },
+          { time: "3/28 18:00", title: "頒獎與點心", detail: "吃飯前小點" },
+          { time: "3/28 18:15", title: "烤肉與火鍋", detail: "準備烤肉與火鍋用餐" },
+          { time: "3/28 19:30", title: "收拾與慶生", detail: "吃完收拾，後慶生" },
+          { time: "3/29 09:30", title: "早餐", detail: "免費早餐" },
+          { time: "3/29 11:00", title: "退房", detail: "整理行李" },
+          { time: "3/29 11:20", title: "宜蘭頭等倉 Heads Up", detail: "https://maps.app.goo.gl/MkAyJVhtQU9ogL1z7" },
+          { time: "3/29 15:00", title: "活動結束", detail: "安全返家" },
+        ];
+
+        const cars = [
+          { id: 1, driver: "小柯", location: "桃園八德", passengers: ["彥霖", "阿杰（宜蘭）", "Ren"] },
+          { id: 2, driver: "Statham", location: "新北新店", passengers: ["Tyler", "WADEEE（宜蘭）", "唐唐"] },
+          { id: 3, driver: "游承", location: "桃園八德", passengers: ["林湯", "Charlie（三重）", "萬（三重）"] },
+          { id: 4, driver: "堯", location: "新北板橋", passengers: ["小温", "Leo"] },
+          { id: 5, driver: "Zack", location: "新竹市關新路", passengers: ["豪", "小豪", "丁丁"] },
+          { id: 6, driver: "蔡旻諺", location: "新竹市", passengers: ["阿虎", "Lai", "Sean"] },
+          { id: 7, driver: "Timmy", location: "台北車站", passengers: ["張智翔", "科良", "Hao"] },
+          { id: 8, driver: "吳炫", location: "新北土城", passengers: ["Paper", "nick", "偉傑"] },
+          { id: 9, driver: "陳肉粽♉️", location: "新北三重", passengers: ["ShihChe 陳世哲", "瑋Ming", "李庭州"] },
+          { id: 10, driver: "Horus", location: "竹南（到新竹）", passengers: ["周建宏", "鉦倫（竹南）"] },
+          { id: 11, driver: "Ming", location: "台北大直", passengers: ["小黑", "Chung", "Asics Cu"] },
+          { id: 12, driver: "黑黑", location: "台北市", passengers: ["JL Y.", "Hung Yi Huang", "舜凱"] },
+          { id: 13, driver: "盧敬文", location: "台北市", passengers: ["蕭又瑋", "岳彤 Gaku", "漢克"] },
+          { id: 14, driver: "黃寯寬", location: "北投明德站", passengers: ["Koma", "Y.H.wang（南港）", "JKK（明德）"] },
+        ];
+
+        const beds = [
+          { building: "A棟", floor: "2樓", room: "城堡四人房", people: ["小豪", "Zack", "萬", "Charlie"] },
+          { building: "A棟", floor: "2樓", room: "時尚雙人房", people: ["堯", "小温", "周建宏"] },
+          { building: "A棟", floor: "2樓", room: "愛戀雙人房", people: ["李庭州", "丁丁", "Y.H.wang", "蕭又瑋"] },
+          { building: "A棟", floor: "3樓", room: "地中海四人房", people: ["Sean", "蔡旻諺", "岳彤 Gaku", "漢克", "Lai", "阿虎"] },
+          { building: "A棟", floor: "3樓", room: "普普風四人房", people: ["偉傑", "陳肉粽♉️", "Koma", "小黑"] },
+          { building: "A棟", floor: "3樓", room: "經典雙人房", people: ["吳炫", "Paper", "nick"] },
+          { building: "B棟", floor: "2樓", room: "城堡四人房", people: ["彥霖", "小柯", "唐唐", "阿杰"] },
+          { building: "B棟", floor: "2樓", room: "時尚雙人房", people: ["Ming", "豪", "JKK"] },
+          { building: "B棟", f
