@@ -4,11 +4,48 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>羊聚醉樂園｜活動資訊</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Noto Sans TC", "system-ui", "sans-serif"],
+            },
+            boxShadow: {
+              soft: "0 10px 30px rgba(15, 23, 42, 0.08)",
+              float: "0 20px 50px rgba(15, 23, 42, 0.12)",
+            },
+          },
+        },
+      };
+    </script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Noto Sans TC", system-ui, sans-serif;
+      }
+      .glass {
+        background: rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(18px);
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
   </head>
   <body class="bg-slate-100">
     <div id="root"></div>
@@ -197,21 +234,33 @@
         );
 
         return (
-          <div className="min-h-screen bg-gradient-to-b from-slate-50 via-stone-50 to-zinc-100 text-slate-800">
-            <div className="mx-auto max-w-md px-3 py-4 md:max-w-lg">
-              <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white/90 shadow-2xl shadow-slate-200/70 backdrop-blur">
-                <div className="relative overflow-hidden bg-gradient-to-br from-slate-800 via-slate-700 to-stone-600 px-5 pb-6 pt-6 text-white">
-                  <div className="absolute -left-8 -top-8 h-28 w-28 rounded-full bg-white/10 blur-2xl" />
-                  <div className="absolute -right-10 top-10 h-32 w-32 rounded-full bg-slate-300/20 blur-3xl" />
+          <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#f8fafc_0%,_#f8fafc_24%,_#f3f4f6_50%,_#e5e7eb_100%)] text-slate-800">
+            <div className="pointer-events-none fixed inset-0 overflow-hidden">
+              <div className="absolute left-[-60px] top-[-40px] h-56 w-56 rounded-full bg-white/70 blur-3xl" />
+              <div className="absolute right-[-40px] top-24 h-64 w-64 rounded-full bg-stone-200/60 blur-3xl" />
+              <div className="absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-slate-200/40 blur-3xl" />
+            </div>
+
+            <div className="relative mx-auto max-w-md px-3 py-4 md:max-w-lg md:py-8">
+              <div className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/80 shadow-float ring-1 ring-slate-200/70 backdrop-blur-xl">
+                <div className="relative overflow-hidden bg-[linear-gradient(135deg,_#0f172a_0%,_#1e293b_45%,_#57534e_100%)] px-5 pb-7 pt-6 text-white">
+                  <div className="absolute -left-10 -top-10 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
+                  <div className="absolute right-0 top-12 h-40 w-40 rounded-full bg-stone-300/20 blur-3xl" />
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/10 to-transparent" />
 
                   <div className="relative z-10 text-center">
-                    <div className="mx-auto text-xs font-bold tracking-[0.35em] text-slate-200">EVENT GUIDE</div>
+                    <div className="mx-auto inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold tracking-[0.35em] text-slate-100 shadow-soft">
+                      EVENT GUIDE
+                    </div>
 
-                    <div className="mt-4 flex items-center justify-center gap-4">
-                      <img src={heroImage} alt="羊圖示" className="h-16 w-16 object-contain" />
+                    <div className="mt-5 flex items-center justify-center gap-4">
+                      <div className="flex h-28 w-28 items-center justify-center rounded-3xl border border-white/15 bg-white/10 shadow-soft backdrop-blur">
+                        <img src={heroImage} alt="羊圖示" className="h-24 w-24 object-contain drop-shadow-lg" />
+                      </div>
                       <div className="text-left">
-                        <h1 className="text-4xl font-black tracking-wide drop-shadow-sm">羊聚醉樂園</h1>
+                        <h1 className="text-[2.15rem] font-black tracking-wide drop-shadow-sm md:text-4xl">羊聚醉樂園</h1>
                         <p className="mt-2 text-sm font-semibold text-slate-200">03/28（六）－03/29（日）</p>
+                        <p className="mt-1 text-xs text-slate-300">住宿 × 闖關 × 聚會 × 慶生</p>
                       </div>
                     </div>
 
@@ -219,7 +268,7 @@
                       href="https://maps.app.goo.gl/KH5P84pawvgUQmJa9"
                       target="_blank"
                       rel="noreferrer"
-                      className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-black text-slate-700 shadow-lg"
+                      className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/95 px-4 py-2.5 text-xs font-black text-slate-700 shadow-xl transition hover:-translate-y-0.5 hover:bg-white"
                     >
                       <Icon name="map-pin" className="h-3.5 w-3.5" />
                       民宿地址｜點擊導航
@@ -227,67 +276,72 @@
                   </div>
                 </div>
 
-                <div className="grid grid-cols-5 gap-2 bg-gradient-to-r from-slate-50 to-stone-100 p-3">
-                  <button onClick={() => setTab("schedule")} className={tabButtonClass("schedule")}>
-                    <Icon name="calendar-days" className="h-4 w-4" />
-                    行程
-                  </button>
-                  <button onClick={() => setTab("notice")} className={tabButtonClass("notice")}>
-                    <Icon name="shield-alert" className="h-4 w-4" />
-                    注意
-                  </button>
-                  <button onClick={() => setTab("car")} className={tabButtonClass("car")}>
-                    <Icon name="car" className="h-4 w-4" />
-                    汽車
-                  </button>
-                  <button onClick={() => setTab("bed")} className={tabButtonClass("bed")}>
-                    <Icon name="bed-double" className="h-4 w-4" />
-                    床位
-                  </button>
-                  <button onClick={() => setTab("team")} className={tabButtonClass("team")}>
-                    <Icon name="users" className="h-4 w-4" />
-                    分組
-                  </button>
+                <div className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/75 px-3 py-3 backdrop-blur-xl">
+                  <div className="hide-scrollbar grid grid-cols-5 gap-2 overflow-x-auto">
+                    <button onClick={() => setTab("schedule")} className={tabButtonClass("schedule")}>
+                      <Icon name="calendar-days" className="h-4 w-4" />
+                      行程
+                    </button>
+                    <button onClick={() => setTab("notice")} className={tabButtonClass("notice")}>
+                      <Icon name="shield-alert" className="h-4 w-4" />
+                      注意
+                    </button>
+                    <button onClick={() => setTab("car")} className={tabButtonClass("car")}>
+                      <Icon name="car" className="h-4 w-4" />
+                      汽車
+                    </button>
+                    <button onClick={() => setTab("bed")} className={tabButtonClass("bed")}>
+                      <Icon name="bed-double" className="h-4 w-4" />
+                      床位
+                    </button>
+                    <button onClick={() => setTab("team")} className={tabButtonClass("team")}>
+                      <Icon name="users" className="h-4 w-4" />
+                      分組
+                    </button>
+                  </div>
                 </div>
 
-                <div className="relative overflow-hidden bg-gradient-to-b from-white to-slate-50 p-4">
+                <div className="relative overflow-hidden bg-gradient-to-b from-white via-slate-50/80 to-stone-50/90 p-4 md:p-5">
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white/60 to-transparent" />
                   <div className="relative z-10 space-y-4">
                     {tab === "schedule" && (
                       <div className="space-y-6">
-                        <div className="rounded-[1.5rem] bg-slate-800 p-4 text-white shadow-lg">
-                          <div className="text-xs font-black tracking-[0.2em] text-slate-300">DAY 1</div>
+                        <div className="rounded-[1.75rem] bg-[linear-gradient(135deg,_#0f172a_0%,_#334155_100%)] p-5 text-white shadow-soft">
+                          <div className="text-xs font-black tracking-[0.25em] text-slate-300">DAY 1</div>
                           <div className="mt-1 text-3xl font-black">3/28</div>
+                          <div className="mt-2 text-sm text-slate-300">集合、入住、闖關、解謎、烤肉與慶生</div>
                         </div>
-                        {renderTimeline(day1Schedule, "3/28", "bg-slate-800")}
+                        {renderTimeline(day1Schedule, "3/28", "bg-slate-800 ring-4 ring-white")}
 
-                        <div className="rounded-[1.5rem] bg-stone-200 p-4 text-slate-900 shadow-lg shadow-slate-200">
-                          <div className="text-xs font-black tracking-[0.2em] text-neutral-700">DAY 2</div>
+                        <div className="rounded-[1.75rem] bg-[linear-gradient(135deg,_#e7e5e4_0%,_#d6d3d1_100%)] p-5 text-slate-900 shadow-soft">
+                          <div className="text-xs font-black tracking-[0.25em] text-neutral-700">DAY 2</div>
                           <div className="mt-1 text-3xl font-black">3/29</div>
+                          <div className="mt-2 text-sm text-neutral-700">早餐、退房、續攤與平安返家</div>
                         </div>
-                        {renderTimeline(day2Schedule, "3/29", "bg-stone-600")}
+                        {renderTimeline(day2Schedule, "3/29", "bg-stone-600 ring-4 ring-white")}
                       </div>
                     )}
 
                     {tab === "notice" && (
                       <div className="space-y-5">
-                        <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5 shadow-sm">
-                          <div className="flex items-center gap-2 text-slate-700">
-                            <Icon name="map-pin" className="h-5 w-5" />
-                            <div className="text-base font-black">集合與行程提醒</div>
+                        <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/85 p-5 shadow-soft">
+                          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-slate-700">
+                            <Icon name="map-pin" className="h-4 w-4" />
+                            <div className="text-sm font-black">集合與行程提醒</div>
                           </div>
-                          <ul className="mt-3 space-y-3 text-sm leading-6 text-neutral-700">
+                          <ul className="space-y-3 text-sm leading-7 text-neutral-700">
                             <li>• 11:15 在福哥石窯雞門口集合（宜蘭縣五結鄉國民中路12-16號）</li>
                             <li>• 到場後請先找桌長報到，再依安排入座，請勿自行亂坐</li>
                             <li>• 中餐結束後可至新動市集散步，等待民宿入住</li>
                           </ul>
                         </div>
 
-                        <div className="rounded-[1.5rem] border border-slate-200 bg-stone-50 p-5 shadow-sm">
-                          <div className="flex items-center gap-2 text-stone-700">
-                            <Icon name="shield-alert" className="h-5 w-5" />
-                            <div className="text-base font-black">安全與活動規範</div>
+                        <div className="rounded-[1.75rem] border border-stone-200/80 bg-white/85 p-5 shadow-soft">
+                          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-stone-100 px-3 py-1.5 text-stone-700">
+                            <Icon name="shield-alert" className="h-4 w-4" />
+                            <div className="text-sm font-black">安全與活動規範</div>
                           </div>
-                          <ul className="mt-3 space-y-3 text-sm leading-6 text-neutral-700">
+                          <ul className="space-y-3 text-sm leading-7 text-neutral-700">
                             <li>• 本活動無保險，請小心駕駛</li>
                             <li>• 乘客請協助注意周邊安全並協助司機保持精神，乘客請勿睡覺</li>
                             <li>• 本活動嚴禁毒品，若有使用非法藥物屬於個人行為</li>
@@ -297,12 +351,12 @@
                           </ul>
                         </div>
 
-                        <div className="rounded-[1.5rem] border border-slate-200 bg-zinc-50 p-5 shadow-sm">
-                          <div className="flex items-center gap-2 text-slate-700">
-                            <Icon name="house" className="h-5 w-5" />
-                            <div className="text-base font-black">住宿與設備提醒</div>
+                        <div className="rounded-[1.75rem] border border-zinc-200/80 bg-white/85 p-5 shadow-soft">
+                          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1.5 text-slate-700">
+                            <Icon name="house" className="h-4 w-4" />
+                            <div className="text-sm font-black">住宿與設備提醒</div>
                           </div>
-                          <ul className="mt-3 space-y-3 text-sm leading-6 text-neutral-700">
+                          <ul className="space-y-3 text-sm leading-7 text-neutral-700">
                             <li>• 民宿僅提供洗髮精、沐浴乳與大小毛巾，其餘個人備品請自行準備</li>
                             <li>• 唱歌時間為 08:00–22:00，請務必遵守時間規定，超時會被開罰</li>
                             <li>• 現場提供免洗餐具，每人一組（杯子、碗、筷子）</li>
@@ -313,7 +367,7 @@
 
                     {tab === "car" && (
                       <div className="space-y-4">
-                        <div className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm">
+                        <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/85 p-4 shadow-soft">
                           <div className="flex items-center gap-2 text-sm font-black text-slate-700">
                             <Icon name="search" className="h-4 w-4" />
                             搜尋汽車名單
@@ -322,31 +376,31 @@
                             value={carSearch}
                             onChange={(e) => setCarSearch(e.target.value)}
                             placeholder="輸入人名、司機或上車地點"
-                            className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-slate-400"
+                            className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-slate-400 focus:bg-white focus:shadow-soft"
                           />
                         </div>
 
                         {filteredCars.length === 0 ? (
-                          <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-white p-5 text-center text-sm text-neutral-500">
+                          <div className="rounded-[1.75rem] border border-dashed border-slate-200 bg-white p-5 text-center text-sm text-neutral-500 shadow-soft">
                             查無符合的人名或地點
                           </div>
                         ) : (
                           filteredCars.map((car) => (
-                            <div key={car.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                              <div className="flex items-center justify-between">
-                                <div className="text-xs font-bold text-slate-500">🚗 第{car.id}車</div>
-                                <div className="rounded-full bg-slate-800 px-2 py-1 text-xs font-black text-white">司機</div>
+                            <div key={car.id} className="rounded-[1.75rem] border border-slate-200/80 bg-white/90 p-4 shadow-soft transition hover:-translate-y-0.5 hover:shadow-float">
+                              <div className="flex items-center justify-between gap-3">
+                                <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">🚗 第{car.id}車</div>
+                                <div className="rounded-full bg-slate-800 px-3 py-1 text-xs font-black text-white">司機</div>
                               </div>
 
-                              <div className="mt-2 text-xl font-black text-slate-900">{car.driver}</div>
-                              <div className="flex items-center gap-1 text-sm text-slate-500">
+                              <div className="mt-3 text-2xl font-black text-slate-900">{car.driver}</div>
+                              <div className="mt-1 flex items-center gap-1 text-sm text-slate-500">
                                 <Icon name="map-pin" className="h-4 w-4" />
                                 {car.location}
                               </div>
 
                               <div className="mt-4 grid grid-cols-2 gap-2">
                                 {car.passengers.map((p, i) => (
-                                  <div key={`${car.id}-${p}-${i}`} className="rounded-lg bg-slate-100 py-2 text-center text-sm font-semibold">
+                                  <div key={`${car.id}-${p}-${i}`} className="rounded-xl bg-slate-50 px-3 py-2 text-center text-sm font-semibold text-slate-700 ring-1 ring-slate-200">
                                     {p}
                                   </div>
                                 ))}
@@ -359,7 +413,7 @@
 
                     {tab === "bed" && (
                       <div className="space-y-6">
-                        <div className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm">
+                        <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/85 p-4 shadow-soft">
                           <div className="flex items-center gap-2 text-sm font-black text-slate-700">
                             <Icon name="search" className="h-4 w-4" />
                             搜尋床位名單
@@ -368,7 +422,7 @@
                             value={bedSearch}
                             onChange={(e) => setBedSearch(e.target.value)}
                             placeholder="輸入人名、房型或樓層"
-                            className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-slate-400"
+                            className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-slate-400 focus:bg-white focus:shadow-soft"
                           />
                         </div>
 
@@ -379,19 +433,19 @@
 
                     {tab === "team" && (
                       <div className="space-y-4">
-                        <div className="rounded-[1.75rem] border border-slate-200 bg-slate-50 p-6 text-center shadow-sm">
-                          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-800 text-white shadow-lg">
+                        <div className="rounded-[1.9rem] border border-slate-200/80 bg-white/90 p-6 text-center shadow-soft">
+                          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[linear-gradient(135deg,_#0f172a_0%,_#334155_100%)] text-white shadow-xl">
                             <Icon name="party-popper" className="h-7 w-7" />
                           </div>
                           <div className="mt-4 text-2xl font-black text-neutral-900">遊戲分組</div>
-                          <div className="mt-2 text-sm leading-6 text-neutral-700">
+                          <div className="mt-2 text-sm leading-7 text-neutral-700">
                             分組名單將在 <span className="font-black text-slate-800">活動當日</span> 公布！
                           </div>
-                          <div className="mt-2 text-sm leading-6 text-neutral-700">保留一點神秘感與驚喜感 ✨</div>
-                          <div className="mt-1 text-sm leading-6 text-neutral-700">大家一起期待一下吧，現場見 😆</div>
+                          <div className="mt-2 text-sm leading-7 text-neutral-700">保留一點神秘感與驚喜感 ✨</div>
+                          <div className="mt-1 text-sm leading-7 text-neutral-700">大家一起期待一下吧，現場見 😆</div>
                         </div>
 
-                        <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-white p-4 text-center text-sm font-medium text-slate-500">
+                        <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-white/90 p-4 text-center text-sm font-medium text-slate-500 shadow-soft">
                           當天現場公布分組，請留意主持人說明 📢
                         </div>
                       </div>
