@@ -6,7 +6,10 @@
     <title>羊聚醉樂園｜活動資訊</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -14,6 +17,10 @@
           extend: {
             fontFamily: {
               sans: ["Noto Sans TC", "system-ui", "sans-serif"],
+            },
+            boxShadow: {
+              soft: "0 10px 30px rgba(15, 23, 42, 0.08)",
+              float: "0 20px 50px rgba(15, 23, 42, 0.12)",
             },
           },
         },
@@ -23,10 +30,19 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-      html { scroll-behavior: smooth; }
-      body { font-family: "Noto Sans TC", system-ui, sans-serif; }
-      .hide-scrollbar::-webkit-scrollbar { display: none; }
-      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Noto Sans TC", system-ui, sans-serif;
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
     </style>
   </head>
   <body class="bg-slate-100">
@@ -37,6 +53,9 @@
 
       const heroImage =
         "https://raw.githubusercontent.com/kodada55123/kodada55123.github.io/a3de853fe1dafa0afe5dbd3d19beb4dcd226d6ae/ChatGPT%20Image%202025%E5%B9%B411%E6%9C%8816%E6%97%A5%20%E4%B8%8B%E5%8D%8810_29_37.png";
+
+      const scheduleBg =
+        "https://raw.githubusercontent.com/kodada55123/kodada55123.github.io/c817d6e087137010e067e521da6e3af4b19e1794/ChatGPT%20Image%202026%E5%B9%B43%E6%9C%8816%E6%97%A5%20%E4%B8%8B%E5%8D%8809_02_52.png";
 
       const schedule = [
         { time: "3/28 11:15", title: "福哥石窯雞羅東店 吃中餐", detail: "https://maps.app.goo.gl/rZBhn9SpTKiesr1B9" },
@@ -261,13 +280,13 @@
       function Timeline({ items, dayPrefix, markerClass }) {
         return (
           <div className="relative space-y-5 pl-6">
-            <div className="absolute bottom-0 left-2 top-0 w-[2px] bg-slate-200" />
+            <div className="absolute bottom-0 left-2 top-0 w-[2px] bg-slate-200/90" />
             {items.map((item, i) => {
               const isLink = item.detail.startsWith("http");
               return (
                 <div key={`${dayPrefix}-${item.time}-${i}`} className="relative">
                   <div className={`absolute -left-[11px] top-2 h-5 w-5 rounded-full ${markerClass}`} />
-                  <div className="rounded-xl border border-slate-200 bg-white/95 p-4 shadow-sm">
+                  <div className="rounded-2xl border border-white/60 bg-white/88 p-4 shadow-soft backdrop-blur-sm">
                     <div className="text-xs font-bold text-slate-500">{item.time.replace(`${dayPrefix} `, "")}</div>
                     <div className="mt-1 text-lg font-black text-slate-900">{item.title}</div>
                     {isLink ? (
@@ -310,14 +329,14 @@
                 </div>
               ) : (
                 rooms.map((room, i) => (
-                  <div key={`${title}-${room.room}-${i}`} className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm">
+                  <div key={`${title}-${room.room}-${i}`} className="rounded-[1.5rem] border border-slate-200 bg-white/95 p-4 shadow-soft">
                     <div className={`inline-block rounded-full px-3 py-1 text-xs font-black ${accent}`}>{room.floor}</div>
                     <div className="mt-3 text-lg font-black text-slate-900">{room.room}</div>
                     <div className="mt-4 flex flex-wrap gap-2">
                       {room.people.map((person, idx) => (
                         <span
                           key={`${room.room}-${person}-${idx}`}
-                          className="rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold text-neutral-700 ring-1 ring-slate-200 shadow-sm"
+                          className="rounded-full bg-white px-3 py-1.5 text-xs font-bold text-neutral-700 ring-1 ring-slate-200 shadow-sm"
                         >
                           {person}
                         </span>
@@ -385,7 +404,7 @@
         const day2Schedule = schedule.filter((item) => item.time.startsWith("3/29"));
 
         const tabButtonClass = (id) =>
-          `flex flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2 text-[11px] font-black transition-all ${
+          `flex min-w-0 flex-col items-center justify-center gap-1.5 rounded-2xl px-1 py-2.5 text-[11px] font-black transition-all ${
             tab === id
               ? "bg-slate-800 text-white shadow-lg shadow-slate-200"
               : "bg-white text-slate-700 ring-1 ring-slate-200"
@@ -400,19 +419,19 @@
             </div>
 
             <div className="relative mx-auto max-w-md px-3 py-4 md:max-w-lg md:py-8">
-              <div className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/80 shadow-[0_20px_50px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/70 backdrop-blur-xl">
+              <div className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/80 shadow-float ring-1 ring-slate-200/70 backdrop-blur-xl">
                 <div className="relative overflow-hidden bg-[linear-gradient(135deg,_#0f172a_0%,_#1e293b_45%,_#57534e_100%)] px-5 pb-7 pt-6 text-white">
                   <div className="absolute -left-10 -top-10 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
                   <div className="absolute right-0 top-12 h-40 w-40 rounded-full bg-stone-300/20 blur-3xl" />
                   <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/10 to-transparent" />
 
                   <div className="relative z-10 text-center">
-                    <div className="mx-auto inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold tracking-[0.35em] text-slate-100 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                    <div className="mx-auto inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold tracking-[0.35em] text-slate-100 shadow-soft">
                       EVENT GUIDE
                     </div>
 
                     <div className="mt-5 flex items-center justify-center gap-4">
-                      <div className="flex h-28 w-28 items-center justify-center rounded-3xl border border-white/15 bg-white/10 shadow-[0_10px_30px_rgba(15,23,42,0.08)] backdrop-blur">
+                      <div className="flex h-28 w-28 items-center justify-center rounded-3xl border border-white/15 bg-white/10 shadow-soft backdrop-blur">
                         <img src={heroImage} alt="羊圖示" className="h-24 w-24 object-contain drop-shadow-lg" />
                       </div>
                       <div className="text-left">
@@ -434,8 +453,8 @@
                   </div>
                 </div>
 
-                <div className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/75 px-3 py-3 backdrop-blur-xl">
-                  <div className="hide-scrollbar grid grid-cols-6 gap-2 overflow-x-auto">
+                <div className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/80 px-3 py-3 backdrop-blur-xl">
+                  <div className="grid grid-cols-6 gap-2">
                     <button onClick={() => setTab("schedule")} className={tabButtonClass("schedule")}>
                       <CalendarIcon className="h-5 w-5" />
                       <span>行程</span>
@@ -464,18 +483,35 @@
                 </div>
 
                 <div className="relative overflow-hidden bg-gradient-to-b from-white via-slate-50/80 to-stone-50/90 p-4 md:p-5">
-                  <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white/60 to-transparent" />
+                  {tab === "schedule" ? (
+                    <>
+                      <div
+                        className="pointer-events-none absolute inset-0 opacity-[0.13]"
+                        style={{
+                          backgroundImage: `url("${scheduleBg}")`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center center",
+                          backgroundRepeat: "no-repeat",
+                          backgroundAttachment: "fixed",
+                        }}
+                      />
+                      <div className="pointer-events-none absolute inset-0 bg-white/45" />
+                    </>
+                  ) : null}
+
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white/70 to-transparent" />
+
                   <div className="relative z-10 space-y-4">
                     {tab === "schedule" ? (
                       <div className="space-y-6">
-                        <div className="rounded-[1.75rem] bg-[linear-gradient(135deg,_#0f172a_0%,_#334155_100%)] p-5 text-white shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                        <div className="rounded-[1.75rem] bg-[linear-gradient(135deg,_rgba(15,23,42,0.95)_0%,_rgba(51,65,85,0.92)_100%)] p-5 text-white shadow-soft backdrop-blur">
                           <div className="text-xs font-black tracking-[0.25em] text-slate-300">DAY 1</div>
                           <div className="mt-1 text-3xl font-black">3/28</div>
                           <div className="mt-2 text-sm text-slate-300">集合、入住、闖關、解謎、烤肉與慶生</div>
                         </div>
                         <Timeline items={day1Schedule} dayPrefix="3/28" markerClass="bg-slate-800 ring-4 ring-white" />
 
-                        <div className="rounded-[1.75rem] bg-[linear-gradient(135deg,_#e7e5e4_0%,_#d6d3d1_100%)] p-5 text-slate-900 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                        <div className="rounded-[1.75rem] bg-[linear-gradient(135deg,_rgba(231,229,228,0.95)_0%,_rgba(214,211,209,0.92)_100%)] p-5 text-slate-900 shadow-soft backdrop-blur">
                           <div className="text-xs font-black tracking-[0.25em] text-neutral-700">DAY 2</div>
                           <div className="mt-1 text-3xl font-black">3/29</div>
                           <div className="mt-2 text-sm text-neutral-700">早餐、退房、續攤與平安返家</div>
@@ -486,7 +522,7 @@
 
                     {tab === "notice" ? (
                       <div className="space-y-5">
-                        <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/85 p-5 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                        <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/90 p-5 shadow-soft">
                           <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-slate-700">
                             <MapPinIcon className="h-4 w-4" />
                             <div className="text-sm font-black">集合與行程提醒</div>
@@ -498,7 +534,7 @@
                           </ul>
                         </div>
 
-                        <div className="rounded-[1.75rem] border border-stone-200/80 bg-white/85 p-5 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                        <div className="rounded-[1.75rem] border border-stone-200/80 bg-white/90 p-5 shadow-soft">
                           <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-stone-100 px-3 py-1.5 text-stone-700">
                             <AlertIcon className="h-4 w-4" />
                             <div className="text-sm font-black">安全與活動規範</div>
@@ -513,7 +549,7 @@
                           </ul>
                         </div>
 
-                        <div className="rounded-[1.75rem] border border-zinc-200/80 bg-white/85 p-5 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                        <div className="rounded-[1.75rem] border border-zinc-200/80 bg-white/90 p-5 shadow-soft">
                           <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1.5 text-slate-700">
                             <HomeIcon className="h-4 w-4" />
                             <div className="text-sm font-black">住宿與設備提醒</div>
@@ -529,7 +565,7 @@
 
                     {tab === "car" ? (
                       <div className="space-y-4">
-                        <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/85 p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                        <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/90 p-4 shadow-soft">
                           <div className="flex items-center gap-2 text-sm font-black text-slate-700">
                             <SearchIcon className="h-4 w-4" />
                             搜尋汽車名單
@@ -543,12 +579,12 @@
                         </div>
 
                         {filteredCars.length === 0 ? (
-                          <div className="rounded-[1.75rem] border border-dashed border-slate-200 bg-white p-5 text-center text-sm text-neutral-500 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                          <div className="rounded-[1.75rem] border border-dashed border-slate-200 bg-white p-5 text-center text-sm text-neutral-500 shadow-soft">
                             查無符合的人名或地點
                           </div>
                         ) : (
                           filteredCars.map((car) => (
-                            <div key={car.id} className="rounded-[1.75rem] border border-slate-200/80 bg-white/90 p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(15,23,42,0.12)]">
+                            <div key={car.id} className="rounded-[1.75rem] border border-slate-200/80 bg-white/95 p-4 shadow-soft transition hover:-translate-y-0.5 hover:shadow-float">
                               <div className="flex items-center justify-between gap-3">
                                 <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">🚗 第{car.id}車</div>
                                 <div className="rounded-full bg-slate-800 px-3 py-1 text-xs font-black text-white">司機</div>
@@ -575,7 +611,7 @@
 
                     {tab === "bed" ? (
                       <div className="space-y-6">
-                        <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/85 p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                        <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/90 p-4 shadow-soft">
                           <div className="flex items-center gap-2 text-sm font-black text-slate-700">
                             <SearchIcon className="h-4 w-4" />
                             搜尋床位名單
@@ -595,7 +631,18 @@
 
                     {tab === "ig" ? (
                       <div className="space-y-4">
-                        <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/90 p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                        <div className="rounded-[1.75rem] border border-pink-100 bg-[linear-gradient(135deg,_#fff1f7_0%,_#ffffff_100%)] p-5 shadow-soft">
+                          <div className="flex items-center gap-2 text-sm font-black text-pink-700">
+                            <InstagramIcon className="h-4 w-4" />
+                            IG 交流
+                          </div>
+                          <p className="mt-3 text-sm leading-7 text-slate-600">
+                            先互相認識一下吧～大家的 IG 都整理在下面，
+                            歡迎追蹤交流認識一下 😊
+                          </p>
+                        </div>
+
+                        <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/90 p-4 shadow-soft">
                           <div className="flex items-center gap-2 text-sm font-black text-slate-700">
                             <SearchIcon className="h-4 w-4" />
                             搜尋 IG
@@ -622,14 +669,13 @@
                                   href={item.url}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className="rounded-xl border border-slate-200 bg-white p-3 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                                  className="rounded-2xl border border-slate-200 bg-white/95 p-4 text-center shadow-soft transition hover:-translate-y-0.5 hover:shadow-float"
                                 >
-                                  <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-pink-50 text-pink-600 ring-1 ring-pink-100">
+                                  <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-pink-50 via-rose-50 to-orange-50 text-pink-600 ring-1 ring-pink-100">
                                     <InstagramIcon className="h-6 w-6" />
                                   </div>
                                   <div className="font-bold text-slate-800">{item.name}</div>
                                   <div className="mt-1 text-xs text-slate-500">@{username || "instagram"}</div>
-                                  <div className="mt-1 text-xs text-slate-400">點擊查看 IG</div>
                                 </a>
                               );
                             })}
@@ -640,7 +686,7 @@
 
                     {tab === "team" ? (
                       <div className="space-y-4">
-                        <div className="rounded-[1.9rem] border border-slate-200/80 bg-white/90 p-6 text-center shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                        <div className="rounded-[1.9rem] border border-slate-200/80 bg-white/95 p-6 text-center shadow-soft">
                           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[linear-gradient(135deg,_#0f172a_0%,_#334155_100%)] text-white shadow-xl">
                             <PartyIcon className="h-7 w-7" />
                           </div>
@@ -652,7 +698,7 @@
                           <div className="mt-1 text-sm leading-7 text-neutral-700">大家一起期待一下吧，現場見 😆</div>
                         </div>
 
-                        <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-white/90 p-4 text-center text-sm font-medium text-slate-500 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                        <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-white/90 p-4 text-center text-sm font-medium text-slate-500 shadow-soft">
                           當天現場公布分組，請留意主持人說明 📢
                         </div>
                       </div>
