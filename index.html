@@ -1,688 +1,671 @@
-import React, { useMemo, useState } from "react";
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>羊聚醉樂園｜活動資訊</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Noto Sans TC", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      html { scroll-behavior: smooth; }
+      body { font-family: "Noto Sans TC", system-ui, sans-serif; }
+      .hide-scrollbar::-webkit-scrollbar { display: none; }
+      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+  </head>
+  <body class="bg-slate-100">
+    <div id="root"></div>
 
-const heroImage =
-  "https://raw.githubusercontent.com/kodada55123/kodada55123.github.io/a3de853fe1dafa0afe5dbd3d19beb4dcd226d6ae/ChatGPT%20Image%202025%E5%B9%B411%E6%9C%8816%E6%97%A5%20%E4%B8%8B%E5%8D%8810_29_37.png";
+    <script type="text/babel">
+      const { useMemo, useState } = React;
 
-type ScheduleItem = {
-  time: string;
-  title: string;
-  detail: string;
-};
+      const heroImage =
+        "https://raw.githubusercontent.com/kodada55123/kodada55123.github.io/a3de853fe1dafa0afe5dbd3d19beb4dcd226d6ae/ChatGPT%20Image%202025%E5%B9%B411%E6%9C%8816%E6%97%A5%20%E4%B8%8B%E5%8D%8810_29_37.png";
 
-type CarItem = {
-  id: number;
-  driver: string;
-  location: string;
-  passengers: string[];
-};
+      const schedule = [
+        { time: "3/28 11:15", title: "福哥石窯雞羅東店 吃中餐", detail: "https://maps.app.goo.gl/rZBhn9SpTKiesr1B9" },
+        { time: "3/28 13:00", title: "新動市集", detail: "https://maps.app.goo.gl/Xq77Prub4FEQn8rc6" },
+        { time: "3/28 15:00", title: "預計入住", detail: "若可以提早會在群組與大家通知" },
+        { time: "3/28 15:00-15:20", title: "前往放行李", detail: "先到房間放置行李" },
+        { time: "3/28 15:20-15:30", title: "組長集合組員", detail: "各組長找到所有組員" },
+        { time: "3/28 15:30-17:00", title: "闖關遊戲", detail: "開始跑遊戲" },
+        { time: "3/28 17:00-18:00", title: "解謎遊戲", detail: "解謎遊戲開跑～～" },
+        { time: "3/28 18:00", title: "頒獎與點心", detail: "吃飯前小點" },
+        { time: "3/28 18:15", title: "烤肉與火鍋", detail: "準備烤肉與火鍋用餐" },
+        { time: "3/28 19:30", title: "收拾與慶生", detail: "吃完收拾，後慶生" },
+        { time: "3/29 09:30", title: "早餐", detail: "免費早餐" },
+        { time: "3/29 11:00", title: "退房", detail: "整理行李" },
+        { time: "3/29 11:20", title: "宜蘭頭等倉 Heads Up", detail: "https://maps.app.goo.gl/MkAyJVhtQU9ogL1z7" },
+        { time: "3/29 15:00", title: "活動結束", detail: "安全返家" },
+      ];
 
-type IgItem = {
-  name: string;
-  url: string;
-};
+      const cars = [
+        { id: 1, driver: "小柯", location: "桃園八德", passengers: ["彥霖", "阿杰（宜蘭）", "Ren"] },
+        { id: 2, driver: "Statham", location: "新北新店", passengers: ["Tyler", "WADEEE（宜蘭）", "唐唐"] },
+        { id: 3, driver: "游承", location: "桃園八德", passengers: ["林湯", "Charlie（三重）", "萬（三重）"] },
+        { id: 4, driver: "堯", location: "新北板橋", passengers: ["小温", "Leo"] },
+        { id: 5, driver: "Zack", location: "新竹市關新路", passengers: ["豪", "小豪", "丁丁"] },
+        { id: 6, driver: "蔡旻諺", location: "新竹市", passengers: ["阿虎", "Lai", "Sean"] },
+        { id: 7, driver: "Timmy", location: "台北車站", passengers: ["張智翔", "科良", "Hao"] },
+        { id: 8, driver: "吳炫", location: "新北土城", passengers: ["Paper", "nick", "偉傑"] },
+        { id: 9, driver: "陳肉粽♉️", location: "新北三重", passengers: ["ShihChe 陳世哲", "瑋Ming", "李庭州"] },
+        { id: 10, driver: "Horus", location: "竹南（到新竹）", passengers: ["周建宏", "鉦倫（竹南）"] },
+        { id: 11, driver: "Ming", location: "台北大直", passengers: ["小黑", "Chung", "Asics Cu"] },
+        { id: 12, driver: "黑黑", location: "台北市", passengers: ["JL Y.", "Hung Yi Huang", "舜凱"] },
+        { id: 13, driver: "盧敬文", location: "台北市", passengers: ["蕭又瑋", "岳彤 Gaku", "漢克"] },
+        { id: 14, driver: "黃寯寬", location: "北投明德站", passengers: ["Koma", "Y.H.wang（南港）", "JKK（明德）"] },
+      ];
 
-type BedItem = {
-  building: string;
-  floor: string;
-  room: string;
-  people: string[];
-};
+      const igList = [
+        { name: "小柯", url: "https://www.instagram.com/kochechin/" },
+        { name: "Tyler", url: "https://www.instagram.com/jackysmkimo/" },
+        { name: "Statham", url: "https://www.instagram.com/statham_0921/" },
+        { name: "彥霖", url: "https://www.instagram.com/aven465/" },
+        { name: "游承", url: "https://www.instagram.com/casperyu0312/" },
+        { name: "堯", url: "https://www.instagram.com/shake.boy/" },
+        { name: "李庭州", url: "https://www.instagram.com/tienchou_1003/" },
+        { name: "Ren", url: "https://www.instagram.com/ren_chi0619/" },
+        { name: "蔡旻諺", url: "https://www.instagram.com/minyen0801/" },
+        { name: "Y.H.wang", url: "https://www.instagram.com/Maxwang55/" },
+        { name: "Zack", url: "https://www.instagram.com/zack162849/" },
+        { name: "小豪", url: "https://www.instagram.com/chen_hao87/" },
+        { name: "Paper", url: "https://www.instagram.com/kaomago/" },
+        { name: "阿虎", url: "https://www.instagram.com/ddnnnnnn1/" },
+        { name: "岳彤 Gaku", url: "https://www.instagram.com/abc30314/" },
+        { name: "小温", url: "https://www.instagram.com/LeisureWin/" },
+        { name: "漢克", url: "https://www.instagram.com/andycg0327/" },
+        { name: "黑黑", url: "https://www.instagram.com/asdf0314ll/" },
+        { name: "黃寯寬", url: "https://www.instagram.com/kuang_9.19/" },
+        { name: "JL Y.", url: "https://www.instagram.com/jiajia.yeh/" },
+        { name: "萬", url: "https://www.instagram.com/royts_329/" },
+        { name: "Charlie", url: "https://www.instagram.com/Charlie1101.tw/" },
+        { name: "唐唐", url: "https://www.instagram.com/ktang_80205/" },
+        { name: "盧敬文", url: "https://www.instagram.com/jasonlu0515/" },
+        { name: "Lai", url: "https://www.instagram.com/jefferyj7709/" },
+        { name: "Sean", url: "https://www.instagram.com/Chiahsiang0323/" },
+        { name: "Timmy", url: "https://www.instagram.com/timmyx0903/" },
+        { name: "蕭又瑋", url: "https://www.instagram.com/rocker8212/" },
+        { name: "林湯", url: "https://www.instagram.com/Tommylin0703/" },
+        { name: "小黑", url: "https://www.instagram.com/black_mugo/" },
+        { name: "Chung", url: "https://www.instagram.com/mamakcompo/" },
+        { name: "Asics Cu", url: "https://www.instagram.com/asics1112/" },
+        { name: "Horus", url: "https://www.instagram.com/loveshe200/" },
+        { name: "偉傑", url: "https://www.instagram.com/penguin_leo/" },
+        { name: "Leo", url: "https://www.instagram.com/pxtiger97/" },
+        { name: "JKK", url: "https://www.instagram.com/Jack/" },
+        { name: "周建宏", url: "https://www.instagram.com/brianchouo/" },
+        { name: "鉦倫", url: "https://www.instagram.com/zl_bennine.lin/" },
+        { name: "丁丁", url: "https://www.instagram.com/Hsiangding.tw/" },
+        { name: "ShihChe 陳世哲", url: "https://www.instagram.com/Cjchen0225/" },
+        { name: "張智翔", url: "https://www.instagram.com/hsiang_00602/" },
+        { name: "吳炫", url: "https://www.instagram.com/woosh967/" },
+        { name: "陳肉粽♉️", url: "https://www.instagram.com/Rozeng0301/" },
+        { name: "瑋Ming", url: "https://www.instagram.com/weidoor_/" },
+        { name: "舜凱", url: "https://www.instagram.com/andy90322/" },
+        { name: "Hung Yi Huang", url: "https://www.instagram.com/hhhhhh413413/" },
+        { name: "阿杰", url: "https://www.instagram.com/slj20005/" },
+        { name: "Ming", url: "https://www.instagram.com/a92220363/" },
+        { name: "WADEEE", url: "https://www.instagram.com/wadeee0817/" },
+        { name: "科良", url: "https://www.instagram.com/chris_1680888/" },
+        { name: "豪", url: "https://www.instagram.com/ryanchiu1227/" },
+        { name: "Koma", url: "https://www.instagram.com/Komasukekun/" },
+        { name: "Hao", url: "https://www.instagram.com/thisishaowu/" },
+        { name: "林正宏", url: "https://www.instagram.com/simon_890912/" },
+      ];
 
-const schedule: ScheduleItem[] = [
-  { time: "3/28 11:15", title: "福哥石窯雞羅東店 吃中餐", detail: "https://maps.app.goo.gl/rZBhn9SpTKiesr1B9" },
-  { time: "3/28 13:00", title: "新動市集", detail: "https://maps.app.goo.gl/Xq77Prub4FEQn8rc6" },
-  { time: "3/28 15:00", title: "預計入住", detail: "若可以提早會在群組與大家通知" },
-  { time: "3/28 15:00-15:20", title: "前往放行李", detail: "先到房間放置行李" },
-  { time: "3/28 15:20-15:30", title: "組長集合組員", detail: "各組長找到所有組員" },
-  { time: "3/28 15:30-17:00", title: "闖關遊戲", detail: "開始跑遊戲" },
-  { time: "3/28 17:00-18:00", title: "解謎遊戲", detail: "解謎遊戲開跑～～" },
-  { time: "3/28 18:00", title: "頒獎與點心", detail: "吃飯前小點" },
-  { time: "3/28 18:15", title: "烤肉與火鍋", detail: "準備烤肉與火鍋用餐" },
-  { time: "3/28 19:30", title: "收拾與慶生", detail: "吃完收拾，後慶生" },
-  { time: "3/29 09:30", title: "早餐", detail: "免費早餐" },
-  { time: "3/29 11:00", title: "退房", detail: "整理行李" },
-  { time: "3/29 11:20", title: "宜蘭頭等倉 Heads Up", detail: "https://maps.app.goo.gl/MkAyJVhtQU9ogL1z7" },
-  { time: "3/29 15:00", title: "活動結束", detail: "安全返家" },
-];
+      const beds = [
+        { building: "A棟", floor: "2樓", room: "城堡四人房", people: ["小豪", "Zack", "萬", "Charlie"] },
+        { building: "A棟", floor: "2樓", room: "時尚雙人房", people: ["堯", "小温", "周建宏"] },
+        { building: "A棟", floor: "2樓", room: "愛戀雙人房", people: ["李庭州", "丁丁", "Y.H.wang", "蕭又瑋"] },
+        { building: "A棟", floor: "3樓", room: "地中海四人房", people: ["Sean", "蔡旻諺", "岳彤 Gaku", "漢克", "Lai", "阿虎"] },
+        { building: "A棟", floor: "3樓", room: "普普風四人房", people: ["偉傑", "陳肉粽♉️", "Koma", "小黑"] },
+        { building: "A棟", floor: "3樓", room: "經典雙人房", people: ["吳炫", "Paper", "nick"] },
+        { building: "B棟", floor: "2樓", room: "城堡四人房", people: ["彥霖", "小柯", "唐唐", "阿杰"] },
+        { building: "B棟", floor: "2樓", room: "時尚雙人房", people: ["Ming", "豪", "JKK"] },
+        { building: "B棟", floor: "2樓", room: "紫色雙人房", people: ["Ren", "Horus", "瑋Ming", "Leo"] },
+        { building: "B棟", floor: "3樓", room: "地中海四人房", people: ["Asics Cu", "Chung", "張智翔", "Timmy", "科良", "Hao"] },
+        { building: "B棟", floor: "3樓", room: "普普風四人房", people: ["鉦倫", "ShihChe 陳世哲", "WADEEE", "舜凱"] },
+        { building: "B棟", floor: "3樓", room: "經典雙人房", people: ["JL Y.", "黑黑", "Hung Yi Huang"] },
+        { building: "B棟", floor: "4樓", room: "小木屋四人房", people: ["游承", "林湯", "盧敬文", "黃寯寬"] },
+        { building: "B棟", floor: "4樓", room: "小木屋雙人房", people: ["Statham", "Tyler"] },
+      ];
 
-const cars: CarItem[] = [
-  { id: 1, driver: "小柯", location: "桃園八德", passengers: ["彥霖", "阿杰（宜蘭）", "Ren"] },
-  { id: 2, driver: "Statham", location: "新北新店", passengers: ["Tyler", "WADEEE（宜蘭）", "唐唐"] },
-  { id: 3, driver: "游承", location: "桃園八德", passengers: ["林湯", "Charlie（三重）", "萬（三重）"] },
-  { id: 4, driver: "堯", location: "新北板橋", passengers: ["小温", "Leo"] },
-  { id: 5, driver: "Zack", location: "新竹市關新路", passengers: ["豪", "小豪", "丁丁"] },
-  { id: 6, driver: "蔡旻諺", location: "新竹市", passengers: ["阿虎", "Lai", "Sean"] },
-  { id: 7, driver: "Timmy", location: "台北車站", passengers: ["張智翔", "科良", "Hao"] },
-  { id: 8, driver: "吳炫", location: "新北土城", passengers: ["Paper", "nick", "偉傑"] },
-  { id: 9, driver: "陳肉粽♉️", location: "新北三重", passengers: ["ShihChe 陳世哲", "瑋Ming", "李庭州"] },
-  { id: 10, driver: "Horus", location: "竹南（到新竹）", passengers: ["周建宏", "鉦倫（竹南）"] },
-  { id: 11, driver: "Ming", location: "台北大直", passengers: ["小黑", "Chung", "Asics Cu"] },
-  { id: 12, driver: "黑黑", location: "台北市", passengers: ["JL Y.", "Hung Yi Huang", "舜凱"] },
-  { id: 13, driver: "盧敬文", location: "台北市", passengers: ["蕭又瑋", "岳彤 Gaku", "漢克"] },
-  { id: 14, driver: "黃寯寬", location: "北投明德站", passengers: ["Koma", "Y.H.wang（南港）", "JKK（明德）"] },
-];
-
-const igList: IgItem[] = [
-  { name: "小柯", url: "https://www.instagram.com/kochechin/" },
-  { name: "Tyler", url: "https://www.instagram.com/jackysmkimo/" },
-  { name: "Statham", url: "https://www.instagram.com/statham_0921/" },
-  { name: "彥霖", url: "https://www.instagram.com/aven465/" },
-  { name: "游承", url: "https://www.instagram.com/casperyu0312/" },
-  { name: "堯", url: "https://www.instagram.com/shake.boy/" },
-  { name: "李庭州", url: "https://www.instagram.com/tienchou_1003/" },
-  { name: "Ren", url: "https://www.instagram.com/ren_chi0619/" },
-  { name: "蔡旻諺", url: "https://www.instagram.com/minyen0801/" },
-  { name: "Y.H.wang", url: "https://www.instagram.com/Maxwang55/" },
-  { name: "Zack", url: "https://www.instagram.com/zack162849/" },
-  { name: "小豪", url: "https://www.instagram.com/chen_hao87/" },
-  { name: "Paper", url: "https://www.instagram.com/kaomago/" },
-  { name: "阿虎", url: "https://www.instagram.com/ddnnnnnn1/" },
-  { name: "岳彤 Gaku", url: "https://www.instagram.com/abc30314/" },
-  { name: "小温", url: "https://www.instagram.com/LeisureWin/" },
-  { name: "漢克", url: "https://www.instagram.com/andycg0327/" },
-  { name: "黑黑", url: "https://www.instagram.com/asdf0314ll/" },
-  { name: "黃寯寬", url: "https://www.instagram.com/kuang_9.19/" },
-  { name: "JL Y.", url: "https://www.instagram.com/jiajia.yeh/" },
-  { name: "萬", url: "https://www.instagram.com/royts_329/" },
-  { name: "Charlie", url: "https://www.instagram.com/Charlie1101.tw/" },
-  { name: "唐唐", url: "https://www.instagram.com/ktang_80205/" },
-  { name: "盧敬文", url: "https://www.instagram.com/jasonlu0515/" },
-  { name: "Lai", url: "https://www.instagram.com/jefferyj7709/" },
-  { name: "Sean", url: "https://www.instagram.com/Chiahsiang0323/" },
-  { name: "Timmy", url: "https://www.instagram.com/timmyx0903/" },
-  { name: "蕭又瑋", url: "https://www.instagram.com/rocker8212/" },
-  { name: "林湯", url: "https://www.instagram.com/Tommylin0703/" },
-  { name: "小黑", url: "https://www.instagram.com/black_mugo/" },
-  { name: "Chung", url: "https://www.instagram.com/mamakcompo/" },
-  { name: "Asics Cu", url: "https://www.instagram.com/asics1112/" },
-  { name: "Horus", url: "https://www.instagram.com/loveshe200/" },
-  { name: "偉傑", url: "https://www.instagram.com/penguin_leo/" },
-  { name: "Leo", url: "https://www.instagram.com/pxtiger97/" },
-  { name: "JKK", url: "https://www.instagram.com/Jack/" },
-  { name: "周建宏", url: "https://www.instagram.com/brianchouo/" },
-  { name: "鉦倫", url: "https://www.instagram.com/zl_bennine.lin/" },
-  { name: "丁丁", url: "https://www.instagram.com/Hsiangding.tw/" },
-  { name: "ShihChe 陳世哲", url: "https://www.instagram.com/Cjchen0225/" },
-  { name: "張智翔", url: "https://www.instagram.com/hsiang_00602/" },
-  { name: "吳炫", url: "https://www.instagram.com/woosh967/" },
-  { name: "陳肉粽♉️", url: "https://www.instagram.com/Rozeng0301/" },
-  { name: "瑋Ming", url: "https://www.instagram.com/weidoor_/" },
-  { name: "舜凱", url: "https://www.instagram.com/andy90322/" },
-  { name: "Hung Yi Huang", url: "https://www.instagram.com/hhhhhh413413/" },
-  { name: "阿杰", url: "https://www.instagram.com/slj20005/" },
-  { name: "Ming", url: "https://www.instagram.com/a92220363/" },
-  { name: "WADEEE", url: "https://www.instagram.com/wadeee0817/" },
-  { name: "科良", url: "https://www.instagram.com/chris_1680888/" },
-  { name: "豪", url: "https://www.instagram.com/ryanchiu1227/" },
-  { name: "Koma", url: "https://www.instagram.com/Komasukekun/" },
-  { name: "Hao", url: "https://www.instagram.com/thisishaowu/" },
-  { name: "林正宏", url: "https://www.instagram.com/simon_890912/" },
-];
-
-const beds: BedItem[] = [
-  { building: "A棟", floor: "2樓", room: "城堡四人房", people: ["小豪", "Zack", "萬", "Charlie"] },
-  { building: "A棟", floor: "2樓", room: "時尚雙人房", people: ["堯", "小温", "周建宏"] },
-  { building: "A棟", floor: "2樓", room: "愛戀雙人房", people: ["李庭州", "丁丁", "Y.H.wang", "蕭又瑋"] },
-  { building: "A棟", floor: "3樓", room: "地中海四人房", people: ["Sean", "蔡旻諺", "岳彤 Gaku", "漢克", "Lai", "阿虎"] },
-  { building: "A棟", floor: "3樓", room: "普普風四人房", people: ["偉傑", "陳肉粽♉️", "Koma", "小黑"] },
-  { building: "A棟", floor: "3樓", room: "經典雙人房", people: ["吳炫", "Paper", "nick"] },
-  { building: "B棟", floor: "2樓", room: "城堡四人房", people: ["彥霖", "小柯", "唐唐", "阿杰"] },
-  { building: "B棟", floor: "2樓", room: "時尚雙人房", people: ["Ming", "豪", "JKK"] },
-  { building: "B棟", floor: "2樓", room: "紫色雙人房", people: ["Ren", "Horus", "瑋Ming", "Leo"] },
-  { building: "B棟", floor: "3樓", room: "地中海四人房", people: ["Asics Cu", "Chung", "張智翔", "Timmy", "科良", "Hao"] },
-  { building: "B棟", floor: "3樓", room: "普普風四人房", people: ["鉦倫", "ShihChe 陳世哲", "WADEEE", "舜凱"] },
-  { building: "B棟", floor: "3樓", room: "經典雙人房", people: ["JL Y.", "黑黑", "Hung Yi Huang"] },
-  { building: "B棟", floor: "4樓", room: "小木屋四人房", people: ["游承", "林湯", "盧敬文", "黃寯寬"] },
-  { building: "B棟", floor: "4樓", room: "小木屋雙人房", people: ["Statham", "Tyler"] },
-];
-
-type IconProps = React.SVGProps<SVGSVGElement>;
-
-function SearchIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <circle cx="11" cy="11" r="8" />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
-  );
-}
-
-function MapPinIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.54 20.193 4 14.993 4 10a8 8 0 1 1 16 0" />
-      <circle cx="12" cy="10" r="3" />
-    </svg>
-  );
-}
-
-function CarIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M14 16H9m10 0h2v-3l-1-2-2-5H6L4 11l-1 2v3h2" />
-      <circle cx="6.5" cy="16.5" r="2.5" />
-      <circle cx="17.5" cy="16.5" r="2.5" />
-    </svg>
-  );
-}
-
-function BedIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M2 4v16M22 8v12M2 12h20" />
-      <path d="M7 12V8a2 2 0 1 1 4 0v4" />
-      <path d="M13 12V9a2 2 0 1 1 4 0v3" />
-    </svg>
-  );
-}
-
-function UsersIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-    </svg>
-  );
-}
-
-function AlertIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
-      <path d="M12 9v4" />
-      <path d="M12 17h.01" />
-    </svg>
-  );
-}
-
-function CalendarIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M8 2v4M16 2v4" />
-      <rect x="3" y="4" width="18" height="18" rx="2" />
-      <path d="M3 10h18" />
-    </svg>
-  );
-}
-
-function HomeIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="m3 11 9-8 9 8" />
-      <path d="M5 10v10h14V10" />
-    </svg>
-  );
-}
-
-function PartyIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M5.8 11.3 2 22l10.7-3.79" />
-      <path d="M4 3h.01" />
-      <path d="M22 8h.01" />
-      <path d="M15 2h.01" />
-      <path d="M22 20h.01" />
-      <path d="m22 2-2.24 2.24" />
-      <path d="M17 7 3 21" />
-      <path d="m8 16 3-3" />
-    </svg>
-  );
-}
-
-function InstagramIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-    </svg>
-  );
-}
-
-function getInstagramUsername(url: string) {
-  try {
-    const pathname = new URL(url).pathname;
-    return pathname.replace(/^\/+|\/+$/g, "").split("/")[0] ?? "";
-  } catch {
-    return "";
-  }
-}
-
-
-type TimelineProps = {
-  items: ScheduleItem[];
-  dayPrefix: string;
-  markerClass: string;
-};
-
-function Timeline({ items, dayPrefix, markerClass }: TimelineProps) {
-  return (
-    <div className="relative space-y-5 pl-6">
-      <div className="absolute bottom-0 left-2 top-0 w-[2px] bg-slate-200" />
-      {items.map((item, i) => {
-        const isLink = item.detail.startsWith("http");
+      function SearchIcon(props) {
         return (
-          <div key={`${dayPrefix}-${item.time}-${i}`} className="relative">
-            <div className={`absolute -left-[11px] top-2 h-5 w-5 rounded-full ${markerClass}`} />
-            <div className="rounded-xl border border-slate-200 bg-white/95 p-4 shadow-sm">
-              <div className="text-xs font-bold text-slate-500">{item.time.replace(`${dayPrefix} `, "")}</div>
-              <div className="mt-1 text-lg font-black text-slate-900">{item.title}</div>
-              {isLink ? (
-                <div className="mt-2 flex flex-wrap items-center gap-2">
-                  <a
-                    href={item.detail}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-sm font-bold text-slate-700 ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:bg-slate-200"
-                  >
-                    <MapPinIcon className="h-4 w-4" />
-                    導航
-                  </a>
-                  {item.title.includes("Heads Up") ? (
-                    <span className="rounded-full bg-stone-200 px-3 py-1 text-xs font-black text-stone-700">自費</span>
-                  ) : null}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+        );
+      }
+
+      function MapPinIcon(props) {
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.54 20.193 4 14.993 4 10a8 8 0 1 1 16 0" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+        );
+      }
+
+      function CarIcon(props) {
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+            <path d="M14 16H9m10 0h2v-3l-1-2-2-5H6L4 11l-1 2v3h2" />
+            <circle cx="6.5" cy="16.5" r="2.5" />
+            <circle cx="17.5" cy="16.5" r="2.5" />
+          </svg>
+        );
+      }
+
+      function BedIcon(props) {
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+            <path d="M2 4v16M22 8v12M2 12h20" />
+            <path d="M7 12V8a2 2 0 1 1 4 0v4" />
+            <path d="M13 12V9a2 2 0 1 1 4 0v3" />
+          </svg>
+        );
+      }
+
+      function UsersIcon(props) {
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+        );
+      }
+
+      function AlertIcon(props) {
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+            <path d="M12 9v4" />
+            <path d="M12 17h.01" />
+          </svg>
+        );
+      }
+
+      function CalendarIcon(props) {
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+            <path d="M8 2v4M16 2v4" />
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <path d="M3 10h18" />
+          </svg>
+        );
+      }
+
+      function HomeIcon(props) {
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+            <path d="m3 11 9-8 9 8" />
+            <path d="M5 10v10h14V10" />
+          </svg>
+        );
+      }
+
+      function PartyIcon(props) {
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+            <path d="M5.8 11.3 2 22l10.7-3.79" />
+            <path d="M4 3h.01" />
+            <path d="M22 8h.01" />
+            <path d="M15 2h.01" />
+            <path d="M22 20h.01" />
+            <path d="m22 2-2.24 2.24" />
+            <path d="M17 7 3 21" />
+            <path d="m8 16 3-3" />
+          </svg>
+        );
+      }
+
+      function InstagramIcon(props) {
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+          </svg>
+        );
+      }
+
+      function getInstagramUsername(url) {
+        try {
+          const pathname = new URL(url).pathname;
+          return pathname.replace(/^\/+|\/+$/g, "").split("/")[0] ?? "";
+        } catch {
+          return "";
+        }
+      }
+
+      function Timeline({ items, dayPrefix, markerClass }) {
+        return (
+          <div className="relative space-y-5 pl-6">
+            <div className="absolute bottom-0 left-2 top-0 w-[2px] bg-slate-200" />
+            {items.map((item, i) => {
+              const isLink = item.detail.startsWith("http");
+              return (
+                <div key={`${dayPrefix}-${item.time}-${i}`} className="relative">
+                  <div className={`absolute -left-[11px] top-2 h-5 w-5 rounded-full ${markerClass}`} />
+                  <div className="rounded-xl border border-slate-200 bg-white/95 p-4 shadow-sm">
+                    <div className="text-xs font-bold text-slate-500">{item.time.replace(`${dayPrefix} `, "")}</div>
+                    <div className="mt-1 text-lg font-black text-slate-900">{item.title}</div>
+                    {isLink ? (
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <a
+                          href={item.detail}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-sm font-bold text-slate-700 ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:bg-slate-200"
+                        >
+                          <MapPinIcon className="h-4 w-4" />
+                          導航
+                        </a>
+                        {item.title.includes("Heads Up") ? (
+                          <span className="rounded-full bg-stone-200 px-3 py-1 text-xs font-black text-stone-700">自費</span>
+                        ) : null}
+                      </div>
+                    ) : (
+                      <div className="mt-2 text-sm leading-6 text-slate-600">{item.detail}</div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      }
+
+      function RoomSection({ title, rooms, accent }) {
+        return (
+          <div>
+            <div className="mb-3 flex items-center gap-2 text-lg font-black text-slate-800">
+              <HomeIcon className="h-4 w-4" />
+              {title}
+            </div>
+            <div className="space-y-3">
+              {rooms.length === 0 ? (
+                <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-white p-5 text-center text-sm text-neutral-500">
+                  {title}沒有符合的結果
                 </div>
               ) : (
-                <div className="mt-2 text-sm leading-6 text-slate-600">{item.detail}</div>
+                rooms.map((room, i) => (
+                  <div key={`${title}-${room.room}-${i}`} className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm">
+                    <div className={`inline-block rounded-full px-3 py-1 text-xs font-black ${accent}`}>{room.floor}</div>
+                    <div className="mt-3 text-lg font-black text-slate-900">{room.room}</div>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {room.people.map((person, idx) => (
+                        <span
+                          key={`${room.room}-${person}-${idx}`}
+                          className="rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold text-neutral-700 ring-1 ring-slate-200 shadow-sm"
+                        >
+                          {person}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))
               )}
             </div>
           </div>
         );
-      })}
-    </div>
-  );
-}
+      }
 
-type RoomSectionProps = {
-  title: string;
-  rooms: BedItem[];
-  accent: string;
-};
+      function EventInfoPage() {
+        const [tab, setTab] = useState("schedule");
+        const [carSearch, setCarSearch] = useState("");
+        const [bedSearch, setBedSearch] = useState("");
+        const [igSearch, setIgSearch] = useState("");
 
-function RoomSection({ title, rooms, accent }: RoomSectionProps) {
-  return (
-    <div>
-      <div className="mb-3 flex items-center gap-2 text-lg font-black text-slate-800">
-        <HomeIcon className="h-4 w-4" />
-        {title}
-      </div>
-      <div className="space-y-3">
-        {rooms.length === 0 ? (
-          <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-white p-5 text-center text-sm text-neutral-500">
-            {title}沒有符合的結果
-          </div>
-        ) : (
-          rooms.map((room, i) => (
-            <div key={`${title}-${room.room}-${i}`} className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm">
-              <div className={`inline-block rounded-full px-3 py-1 text-xs font-black ${accent}`}>{room.floor}</div>
-              <div className="mt-3 text-lg font-black text-slate-900">{room.room}</div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {room.people.map((person, idx) => (
-                  <span
-                    key={`${room.room}-${person}-${idx}`}
-                    className="rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold text-neutral-700 ring-1 ring-slate-200 shadow-sm"
-                  >
-                    {person}
-                  </span>
-                ))}
-              </div>
+        const normalizedCarSearch = carSearch.trim().toLowerCase();
+        const normalizedBedSearch = bedSearch.trim().toLowerCase();
+        const normalizedIgSearch = igSearch.trim().toLowerCase();
+
+        const filteredCars = useMemo(() => {
+          if (!normalizedCarSearch) return cars;
+          return cars.filter((car) => {
+            const driverMatch = car.driver.toLowerCase().includes(normalizedCarSearch);
+            const locationMatch = car.location.toLowerCase().includes(normalizedCarSearch);
+            const passengerMatch = car.passengers.some((p) => p.toLowerCase().includes(normalizedCarSearch));
+            return driverMatch || locationMatch || passengerMatch;
+          });
+        }, [normalizedCarSearch]);
+
+        const filteredABeds = useMemo(() => {
+          const list = beds.filter((room) => room.building === "A棟");
+          if (!normalizedBedSearch) return list;
+          return list.filter(
+            (room) =>
+              room.room.toLowerCase().includes(normalizedBedSearch) ||
+              room.people.some((person) => person.toLowerCase().includes(normalizedBedSearch)) ||
+              room.floor.toLowerCase().includes(normalizedBedSearch)
+          );
+        }, [normalizedBedSearch]);
+
+        const filteredBBeds = useMemo(() => {
+          const list = beds.filter((room) => room.building === "B棟");
+          if (!normalizedBedSearch) return list;
+          return list.filter(
+            (room) =>
+              room.room.toLowerCase().includes(normalizedBedSearch) ||
+              room.people.some((person) => person.toLowerCase().includes(normalizedBedSearch)) ||
+              room.floor.toLowerCase().includes(normalizedBedSearch)
+          );
+        }, [normalizedBedSearch]);
+
+        const filteredIgList = useMemo(() => {
+          if (!normalizedIgSearch) return igList;
+          return igList.filter((item) => {
+            const username = getInstagramUsername(item.url).toLowerCase();
+            return item.name.toLowerCase().includes(normalizedIgSearch) || username.includes(normalizedIgSearch);
+          });
+        }, [normalizedIgSearch]);
+
+        const day1Schedule = schedule.filter((item) => item.time.startsWith("3/28"));
+        const day2Schedule = schedule.filter((item) => item.time.startsWith("3/29"));
+
+        const tabButtonClass = (id) =>
+          `flex flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2 text-[11px] font-black transition-all ${
+            tab === id
+              ? "bg-slate-800 text-white shadow-lg shadow-slate-200"
+              : "bg-white text-slate-700 ring-1 ring-slate-200"
+          }`;
+
+        return (
+          <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#f8fafc_0%,_#f8fafc_24%,_#f3f4f6_50%,_#e5e7eb_100%)] text-slate-800">
+            <div className="pointer-events-none fixed inset-0 overflow-hidden">
+              <div className="absolute left-[-60px] top-[-40px] h-56 w-56 rounded-full bg-white/70 blur-3xl" />
+              <div className="absolute right-[-40px] top-24 h-64 w-64 rounded-full bg-stone-200/60 blur-3xl" />
+              <div className="absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-slate-200/40 blur-3xl" />
             </div>
-          ))
-        )}
-      </div>
-    </div>
-  );
-}
 
-type TabKey = "schedule" | "notice" | "car" | "bed" | "team" | "ig";
+            <div className="relative mx-auto max-w-md px-3 py-4 md:max-w-lg md:py-8">
+              <div className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/80 shadow-[0_20px_50px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/70 backdrop-blur-xl">
+                <div className="relative overflow-hidden bg-[linear-gradient(135deg,_#0f172a_0%,_#1e293b_45%,_#57534e_100%)] px-5 pb-7 pt-6 text-white">
+                  <div className="absolute -left-10 -top-10 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
+                  <div className="absolute right-0 top-12 h-40 w-40 rounded-full bg-stone-300/20 blur-3xl" />
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/10 to-transparent" />
 
-export default function EventInfoPage() {
-  const [tab, setTab] = useState<TabKey>("schedule");
-  const [carSearch, setCarSearch] = useState("");
-  const [bedSearch, setBedSearch] = useState("");
-  const [igSearch, setIgSearch] = useState("");
-
-  const normalizedCarSearch = carSearch.trim().toLowerCase();
-  const normalizedBedSearch = bedSearch.trim().toLowerCase();
-
-  const filteredCars = useMemo(() => {
-    if (!normalizedCarSearch) return cars;
-    return cars.filter((car) => {
-      const driverMatch = car.driver.toLowerCase().includes(normalizedCarSearch);
-      const locationMatch = car.location.toLowerCase().includes(normalizedCarSearch);
-      const passengerMatch = car.passengers.some((p) => p.toLowerCase().includes(normalizedCarSearch));
-      return driverMatch || locationMatch || passengerMatch;
-    });
-  }, [normalizedCarSearch]);
-
-  const filteredABeds = useMemo(() => {
-    const list = beds.filter((room) => room.building === "A棟");
-    if (!normalizedBedSearch) return list;
-    return list.filter(
-      (room) =>
-        room.room.toLowerCase().includes(normalizedBedSearch) ||
-        room.people.some((person) => person.toLowerCase().includes(normalizedBedSearch)) ||
-        room.floor.toLowerCase().includes(normalizedBedSearch),
-    );
-  }, [normalizedBedSearch]);
-
-  const filteredBBeds = useMemo(() => {
-    const list = beds.filter((room) => room.building === "B棟");
-    if (!normalizedBedSearch) return list;
-    return list.filter(
-      (room) =>
-        room.room.toLowerCase().includes(normalizedBedSearch) ||
-        room.people.some((person) => person.toLowerCase().includes(normalizedBedSearch)) ||
-        room.floor.toLowerCase().includes(normalizedBedSearch),
-    );
-  }, [normalizedBedSearch]);
-
-  const day1Schedule = schedule.filter((item) => item.time.startsWith("3/28"));
-
-  const normalizedIgSearch = igSearch.trim().toLowerCase();
-
-  const filteredIgList = useMemo(() => {
-    if (!normalizedIgSearch) return igList;
-    return igList.filter((item) => {
-      const username = getInstagramUsername(item.url).toLowerCase();
-      return (
-        item.name.toLowerCase().includes(normalizedIgSearch) ||
-        username.includes(normalizedIgSearch)
-      );
-    });
-  }, [normalizedIgSearch]);
-  const day2Schedule = schedule.filter((item) => item.time.startsWith("3/29"));
-
-  const tabButtonClass = (id: TabKey) =>
-    `flex flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2 text-[11px] font-black transition-all ${
-      tab === id
-        ? "bg-slate-800 text-white shadow-lg shadow-slate-200"
-        : "bg-white text-slate-700 ring-1 ring-slate-200"
-    }`;
-
-  return (
-    <div
-      className="min-h-screen bg-[radial-gradient(circle_at_top,_#f8fafc_0%,_#f8fafc_24%,_#f3f4f6_50%,_#e5e7eb_100%)] text-slate-800"
-      style={{ fontFamily: '"Noto Sans TC", system-ui, sans-serif' }}
-    >
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap');
-        html { scroll-behavior: smooth; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      `}</style>
-
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute left-[-60px] top-[-40px] h-56 w-56 rounded-full bg-white/70 blur-3xl" />
-        <div className="absolute right-[-40px] top-24 h-64 w-64 rounded-full bg-stone-200/60 blur-3xl" />
-        <div className="absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-slate-200/40 blur-3xl" />
-      </div>
-
-      <div className="relative mx-auto max-w-md px-3 py-4 md:max-w-lg md:py-8">
-        <div className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/80 shadow-[0_20px_50px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/70 backdrop-blur-xl">
-          <div className="relative overflow-hidden bg-[linear-gradient(135deg,_#0f172a_0%,_#1e293b_45%,_#57534e_100%)] px-5 pb-7 pt-6 text-white">
-            <div className="absolute -left-10 -top-10 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
-            <div className="absolute right-0 top-12 h-40 w-40 rounded-full bg-stone-300/20 blur-3xl" />
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/10 to-transparent" />
-
-            <div className="relative z-10 text-center">
-              <div className="mx-auto inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold tracking-[0.35em] text-slate-100 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
-                EVENT GUIDE
-              </div>
-
-              <div className="mt-5 flex items-center justify-center gap-4">
-                <div className="flex h-28 w-28 items-center justify-center rounded-3xl border border-white/15 bg-white/10 shadow-[0_10px_30px_rgba(15,23,42,0.08)] backdrop-blur">
-                  <img src={heroImage} alt="羊圖示" className="h-24 w-24 object-contain drop-shadow-lg" />
-                </div>
-                <div className="text-left">
-                  <h1 className="text-[2.15rem] font-black tracking-wide drop-shadow-sm md:text-4xl">羊聚醉樂園</h1>
-                  <p className="mt-2 text-sm font-semibold text-slate-200">03/28（六）－03/29（日）</p>
-                  <p className="mt-1 text-xs text-slate-300">住宿 × 闖關 × 聚會 × 慶生</p>
-                </div>
-              </div>
-
-              <a
-                href="https://maps.app.goo.gl/KH5P84pawvgUQmJa9"
-                target="_blank"
-                rel="noreferrer"
-                className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/95 px-4 py-2.5 text-xs font-black text-slate-700 shadow-xl transition hover:-translate-y-0.5 hover:bg-white"
-              >
-                <MapPinIcon className="h-3.5 w-3.5" />
-                民宿地址｜點擊導航
-              </a>
-            </div>
-          </div>
-
-          <div className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/75 px-3 py-3 backdrop-blur-xl">
-            <div className="hide-scrollbar grid grid-cols-6 gap-2 overflow-x-auto">
-              <button onClick={() => setTab("schedule")} className={tabButtonClass("schedule")}>
-                <CalendarIcon className="h-5 w-5" />
-                <span>行程</span>
-              </button>
-              <button onClick={() => setTab("notice")} className={tabButtonClass("notice")}>
-                <AlertIcon className="h-5 w-5" />
-                <span>注意</span>
-              </button>
-              <button onClick={() => setTab("car")} className={tabButtonClass("car")}>
-                <CarIcon className="h-5 w-5" />
-                <span>汽車</span>
-              </button>
-              <button onClick={() => setTab("bed")} className={tabButtonClass("bed")}>
-                <BedIcon className="h-5 w-5" />
-                <span>床位</span>
-              </button>
-              <button onClick={() => setTab("team")} className={tabButtonClass("team")}>
-                <UsersIcon className="h-5 w-5" />
-                <span>分組</span>
-              </button>
-              <button onClick={() => setTab("ig")} className={tabButtonClass("ig")}>
-                <InstagramIcon className="h-5 w-5" />
-                <span>IG</span>
-              </button>
-            </div>
-          </div>
-
-          <div className="relative overflow-hidden bg-gradient-to-b from-white via-slate-50/80 to-stone-50/90 p-4 md:p-5">
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white/60 to-transparent" />
-            <div className="relative z-10 space-y-4">
-              {tab === "schedule" ? (
-                <div className="space-y-6">
-                  <div className="rounded-[1.75rem] bg-[linear-gradient(135deg,_#0f172a_0%,_#334155_100%)] p-5 text-white shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
-                    <div className="text-xs font-black tracking-[0.25em] text-slate-300">DAY 1</div>
-                    <div className="mt-1 text-3xl font-black">3/28</div>
-                    <div className="mt-2 text-sm text-slate-300">集合、入住、闖關、解謎、烤肉與慶生</div>
-                  </div>
-                  <Timeline items={day1Schedule} dayPrefix="3/28" markerClass="bg-slate-800 ring-4 ring-white" />
-
-                  <div className="rounded-[1.75rem] bg-[linear-gradient(135deg,_#e7e5e4_0%,_#d6d3d1_100%)] p-5 text-slate-900 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
-                    <div className="text-xs font-black tracking-[0.25em] text-neutral-700">DAY 2</div>
-                    <div className="mt-1 text-3xl font-black">3/29</div>
-                    <div className="mt-2 text-sm text-neutral-700">早餐、退房、續攤與平安返家</div>
-                  </div>
-                  <Timeline items={day2Schedule} dayPrefix="3/29" markerClass="bg-stone-600 ring-4 ring-white" />
-                </div>
-              ) : null}
-
-              {tab === "notice" ? (
-                <div className="space-y-5">
-                  <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/85 p-5 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-slate-700">
-                      <MapPinIcon className="h-4 w-4" />
-                      <div className="text-sm font-black">集合與行程提醒</div>
+                  <div className="relative z-10 text-center">
+                    <div className="mx-auto inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold tracking-[0.35em] text-slate-100 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                      EVENT GUIDE
                     </div>
-                    <ul className="space-y-3 text-sm leading-7 text-neutral-700">
-                      <li>• 11:15 在福哥石窯雞門口集合（宜蘭縣五結鄉國民中路12-16號）</li>
-                      <li>• 到場後請先找桌長報到，再依安排入座，請勿自行亂坐</li>
-                      <li>• 中餐結束後可至新動市集散步，等待民宿入住</li>
-                    </ul>
-                  </div>
 
-                  <div className="rounded-[1.75rem] border border-stone-200/80 bg-white/85 p-5 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-stone-100 px-3 py-1.5 text-stone-700">
-                      <AlertIcon className="h-4 w-4" />
-                      <div className="text-sm font-black">安全與活動規範</div>
+                    <div className="mt-5 flex items-center justify-center gap-4">
+                      <div className="flex h-28 w-28 items-center justify-center rounded-3xl border border-white/15 bg-white/10 shadow-[0_10px_30px_rgba(15,23,42,0.08)] backdrop-blur">
+                        <img src={heroImage} alt="羊圖示" className="h-24 w-24 object-contain drop-shadow-lg" />
+                      </div>
+                      <div className="text-left">
+                        <h1 className="text-[2.15rem] font-black tracking-wide drop-shadow-sm md:text-4xl">羊聚醉樂園</h1>
+                        <p className="mt-2 text-sm font-semibold text-slate-200">03/28（六）－03/29（日）</p>
+                        <p className="mt-1 text-xs text-slate-300">住宿 × 闖關 × 聚會 × 慶生</p>
+                      </div>
                     </div>
-                    <ul className="space-y-3 text-sm leading-7 text-neutral-700">
-                      <li>• 本活動無保險，請小心駕駛</li>
-                      <li>• 乘客請協助注意周邊安全並協助司機保持精神，乘客請勿睡覺</li>
-                      <li>• 本活動嚴禁毒品，若有使用非法藥物屬於個人行為</li>
-                      <li>• 禁止性騷擾，可以調情但請尊重界線，如有不舒服請私下告知主辦人</li>
-                      <li>• 請理性飲酒，切勿有任何酒後失序或暴力行為</li>
-                      <li>• 希望大家多在公共空間互動，不要一直待在房間休息</li>
-                    </ul>
-                  </div>
 
-                  <div className="rounded-[1.75rem] border border-zinc-200/80 bg-white/85 p-5 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1.5 text-slate-700">
-                      <HomeIcon className="h-4 w-4" />
-                      <div className="text-sm font-black">住宿與設備提醒</div>
-                    </div>
-                    <ul className="space-y-3 text-sm leading-7 text-neutral-700">
-                      <li>• 民宿僅提供洗髮精、沐浴乳與大小毛巾，其餘個人備品請自行準備</li>
-                      <li>• 唱歌時間為 08:00–22:00，請務必遵守時間規定，超時會被開罰</li>
-                      <li>• 現場提供免洗餐具，每人一組（杯子、碗、筷子）</li>
-                    </ul>
+                    <a
+                      href="https://maps.app.goo.gl/KH5P84pawvgUQmJa9"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/95 px-4 py-2.5 text-xs font-black text-slate-700 shadow-xl transition hover:-translate-y-0.5 hover:bg-white"
+                    >
+                      <MapPinIcon className="h-3.5 w-3.5" />
+                      民宿地址｜點擊導航
+                    </a>
                   </div>
                 </div>
-              ) : null}
 
-              {tab === "car" ? (
-                <div className="space-y-4">
-                  <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/85 p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
-                    <div className="flex items-center gap-2 text-sm font-black text-slate-700">
-                      <SearchIcon className="h-4 w-4" />
-                      搜尋汽車名單
-                    </div>
-                    <input
-                      value={carSearch}
-                      onChange={(e) => setCarSearch(e.target.value)}
-                      placeholder="輸入人名、司機或上車地點"
-                      className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-slate-400 focus:bg-white"
-                    />
+                <div className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/75 px-3 py-3 backdrop-blur-xl">
+                  <div className="hide-scrollbar grid grid-cols-6 gap-2 overflow-x-auto">
+                    <button onClick={() => setTab("schedule")} className={tabButtonClass("schedule")}>
+                      <CalendarIcon className="h-5 w-5" />
+                      <span>行程</span>
+                    </button>
+                    <button onClick={() => setTab("notice")} className={tabButtonClass("notice")}>
+                      <AlertIcon className="h-5 w-5" />
+                      <span>注意</span>
+                    </button>
+                    <button onClick={() => setTab("car")} className={tabButtonClass("car")}>
+                      <CarIcon className="h-5 w-5" />
+                      <span>汽車</span>
+                    </button>
+                    <button onClick={() => setTab("bed")} className={tabButtonClass("bed")}>
+                      <BedIcon className="h-5 w-5" />
+                      <span>床位</span>
+                    </button>
+                    <button onClick={() => setTab("team")} className={tabButtonClass("team")}>
+                      <UsersIcon className="h-5 w-5" />
+                      <span>分組</span>
+                    </button>
+                    <button onClick={() => setTab("ig")} className={tabButtonClass("ig")}>
+                      <InstagramIcon className="h-5 w-5" />
+                      <span>IG</span>
+                    </button>
                   </div>
+                </div>
 
-                  {filteredCars.length === 0 ? (
-                    <div className="rounded-[1.75rem] border border-dashed border-slate-200 bg-white p-5 text-center text-sm text-neutral-500 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
-                      查無符合的人名或地點
-                    </div>
-                  ) : (
-                    filteredCars.map((car) => (
-                      <div key={car.id} className="rounded-[1.75rem] border border-slate-200/80 bg-white/90 p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(15,23,42,0.12)]">
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">🚗 第{car.id}車</div>
-                          <div className="rounded-full bg-slate-800 px-3 py-1 text-xs font-black text-white">司機</div>
+                <div className="relative overflow-hidden bg-gradient-to-b from-white via-slate-50/80 to-stone-50/90 p-4 md:p-5">
+                  <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white/60 to-transparent" />
+                  <div className="relative z-10 space-y-4">
+                    {tab === "schedule" ? (
+                      <div className="space-y-6">
+                        <div className="rounded-[1.75rem] bg-[linear-gradient(135deg,_#0f172a_0%,_#334155_100%)] p-5 text-white shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                          <div className="text-xs font-black tracking-[0.25em] text-slate-300">DAY 1</div>
+                          <div className="mt-1 text-3xl font-black">3/28</div>
+                          <div className="mt-2 text-sm text-slate-300">集合、入住、闖關、解謎、烤肉與慶生</div>
+                        </div>
+                        <Timeline items={day1Schedule} dayPrefix="3/28" markerClass="bg-slate-800 ring-4 ring-white" />
+
+                        <div className="rounded-[1.75rem] bg-[linear-gradient(135deg,_#e7e5e4_0%,_#d6d3d1_100%)] p-5 text-slate-900 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                          <div className="text-xs font-black tracking-[0.25em] text-neutral-700">DAY 2</div>
+                          <div className="mt-1 text-3xl font-black">3/29</div>
+                          <div className="mt-2 text-sm text-neutral-700">早餐、退房、續攤與平安返家</div>
+                        </div>
+                        <Timeline items={day2Schedule} dayPrefix="3/29" markerClass="bg-stone-600 ring-4 ring-white" />
+                      </div>
+                    ) : null}
+
+                    {tab === "notice" ? (
+                      <div className="space-y-5">
+                        <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/85 p-5 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-slate-700">
+                            <MapPinIcon className="h-4 w-4" />
+                            <div className="text-sm font-black">集合與行程提醒</div>
+                          </div>
+                          <ul className="space-y-3 text-sm leading-7 text-neutral-700">
+                            <li>• 11:15 在福哥石窯雞門口集合（宜蘭縣五結鄉國民中路12-16號）</li>
+                            <li>• 到場後請先找桌長報到，再依安排入座，請勿自行亂坐</li>
+                            <li>• 中餐結束後可至新動市集散步，等待民宿入住</li>
+                          </ul>
                         </div>
 
-                        <div className="mt-3 text-2xl font-black text-slate-900">{car.driver}</div>
-                        <div className="mt-1 flex items-center gap-1 text-sm text-slate-500">
-                          <MapPinIcon className="h-4 w-4" />
-                          {car.location}
+                        <div className="rounded-[1.75rem] border border-stone-200/80 bg-white/85 p-5 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-stone-100 px-3 py-1.5 text-stone-700">
+                            <AlertIcon className="h-4 w-4" />
+                            <div className="text-sm font-black">安全與活動規範</div>
+                          </div>
+                          <ul className="space-y-3 text-sm leading-7 text-neutral-700">
+                            <li>• 本活動無保險，請小心駕駛</li>
+                            <li>• 乘客請協助注意周邊安全並協助司機保持精神，乘客請勿睡覺</li>
+                            <li>• 本活動嚴禁毒品，若有使用非法藥物屬於個人行為</li>
+                            <li>• 禁止性騷擾，可以調情但請尊重界線，如有不舒服請私下告知主辦人</li>
+                            <li>• 請理性飲酒，切勿有任何酒後失序或暴力行為</li>
+                            <li>• 希望大家多在公共空間互動，不要一直待在房間休息</li>
+                          </ul>
                         </div>
 
-                        <div className="mt-4 grid grid-cols-2 gap-2">
-                          {car.passengers.map((p, i) => (
-                            <div key={`${car.id}-${p}-${i}`} className="rounded-xl bg-slate-50 px-3 py-2 text-center text-sm font-semibold text-slate-700 ring-1 ring-slate-200">
-                              {p}
-                            </div>
-                          ))}
+                        <div className="rounded-[1.75rem] border border-zinc-200/80 bg-white/85 p-5 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1.5 text-slate-700">
+                            <HomeIcon className="h-4 w-4" />
+                            <div className="text-sm font-black">住宿與設備提醒</div>
+                          </div>
+                          <ul className="space-y-3 text-sm leading-7 text-neutral-700">
+                            <li>• 民宿僅提供洗髮精、沐浴乳與大小毛巾，其餘個人備品請自行準備</li>
+                            <li>• 唱歌時間為 08:00–22:00，請務必遵守時間規定，超時會被開罰</li>
+                            <li>• 現場提供免洗餐具，每人一組（杯子、碗、筷子）</li>
+                          </ul>
                         </div>
                       </div>
-                    ))
-                  )}
-                </div>
-              ) : null}
+                    ) : null}
 
-              {tab === "bed" ? (
-                <div className="space-y-6">
-                  <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/85 p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
-                    <div className="flex items-center gap-2 text-sm font-black text-slate-700">
-                      <SearchIcon className="h-4 w-4" />
-                      搜尋床位名單
-                    </div>
-                    <input
-                      value={bedSearch}
-                      onChange={(e) => setBedSearch(e.target.value)}
-                      placeholder="輸入人名、房型或樓層"
-                      className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-slate-400 focus:bg-white"
-                    />
-                  </div>
+                    {tab === "car" ? (
+                      <div className="space-y-4">
+                        <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/85 p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                          <div className="flex items-center gap-2 text-sm font-black text-slate-700">
+                            <SearchIcon className="h-4 w-4" />
+                            搜尋汽車名單
+                          </div>
+                          <input
+                            value={carSearch}
+                            onChange={(e) => setCarSearch(e.target.value)}
+                            placeholder="輸入人名、司機或上車地點"
+                            className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-slate-400 focus:bg-white"
+                          />
+                        </div>
 
-                  <RoomSection title="A棟房間" rooms={filteredABeds} accent="bg-slate-100 text-slate-700" />
-                  <RoomSection title="B棟房間" rooms={filteredBBeds} accent="bg-stone-100 text-stone-700" />
-                </div>
-              ) : null}
+                        {filteredCars.length === 0 ? (
+                          <div className="rounded-[1.75rem] border border-dashed border-slate-200 bg-white p-5 text-center text-sm text-neutral-500 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                            查無符合的人名或地點
+                          </div>
+                        ) : (
+                          filteredCars.map((car) => (
+                            <div key={car.id} className="rounded-[1.75rem] border border-slate-200/80 bg-white/90 p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(15,23,42,0.12)]">
+                              <div className="flex items-center justify-between gap-3">
+                                <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">🚗 第{car.id}車</div>
+                                <div className="rounded-full bg-slate-800 px-3 py-1 text-xs font-black text-white">司機</div>
+                              </div>
 
-              {tab === "ig" ? (
-                <div className="space-y-4">
-                  <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/90 p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
-                    <div className="flex items-center gap-2 text-sm font-black text-slate-700">
-                      <SearchIcon className="h-4 w-4" />
-                      搜尋 IG
-                    </div>
-                    <input
-                      value={igSearch}
-                      onChange={(e) => setIgSearch(e.target.value)}
-                      placeholder="輸入名字或 IG 帳號"
-                      className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-pink-400 focus:bg-white"
-                    />
-                  </div>
+                              <div className="mt-3 text-2xl font-black text-slate-900">{car.driver}</div>
+                              <div className="mt-1 flex items-center gap-1 text-sm text-slate-500">
+                                <MapPinIcon className="h-4 w-4" />
+                                {car.location}
+                              </div>
 
-                  {filteredIgList.length === 0 ? (
-                    <div className="rounded-[1.75rem] border border-dashed border-slate-200 bg-white p-5 text-center text-sm text-neutral-500">
-                      找不到這個人 😢
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-3">
-                      {filteredIgList.map((item) => {
-                        const username = getInstagramUsername(item.url);
-
-                        return (
-                          <a
-                            key={item.name}
-                            href={item.url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="rounded-xl border border-slate-200 bg-white p-3 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-                          >
-                            <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-pink-50 text-pink-600 ring-1 ring-pink-100">
-                              <InstagramIcon className="h-6 w-6" />
+                              <div className="mt-4 grid grid-cols-2 gap-2">
+                                {car.passengers.map((p, i) => (
+                                  <div key={`${car.id}-${p}-${i}`} className="rounded-xl bg-slate-50 px-3 py-2 text-center text-sm font-semibold text-slate-700 ring-1 ring-slate-200">
+                                    {p}
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                            <div className="font-bold text-slate-800">{item.name}</div>
-                            <div className="mt-1 text-xs text-slate-500">@{username || "instagram"}</div>
-                            <div className="mt-1 text-xs text-slate-400">點擊查看 IG</div>
-                          </a>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              ) : null}
+                          ))
+                        )}
+                      </div>
+                    ) : null}
 
-              {tab === "team" ? (
-                <div className="space-y-4">
-                  <div className="rounded-[1.9rem] border border-slate-200/80 bg-white/90 p-6 text-center shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
-                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[linear-gradient(135deg,_#0f172a_0%,_#334155_100%)] text-white shadow-xl">
-                      <PartyIcon className="h-7 w-7" />
-                    </div>
-                    <div className="mt-4 text-2xl font-black text-neutral-900">遊戲分組</div>
-                    <div className="mt-2 text-sm leading-7 text-neutral-700">
-                      分組名單將在 <span className="font-black text-slate-800">活動當日</span> 公布！
-                    </div>
-                    <div className="mt-2 text-sm leading-7 text-neutral-700">保留一點神秘感與驚喜感 ✨</div>
-                    <div className="mt-1 text-sm leading-7 text-neutral-700">大家一起期待一下吧，現場見 😆</div>
-                  </div>
+                    {tab === "bed" ? (
+                      <div className="space-y-6">
+                        <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/85 p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                          <div className="flex items-center gap-2 text-sm font-black text-slate-700">
+                            <SearchIcon className="h-4 w-4" />
+                            搜尋床位名單
+                          </div>
+                          <input
+                            value={bedSearch}
+                            onChange={(e) => setBedSearch(e.target.value)}
+                            placeholder="輸入人名、房型或樓層"
+                            className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-slate-400 focus:bg-white"
+                          />
+                        </div>
 
-                  <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-white/90 p-4 text-center text-sm font-medium text-slate-500 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
-                    當天現場公布分組，請留意主持人說明 📢
+                        <RoomSection title="A棟房間" rooms={filteredABeds} accent="bg-slate-100 text-slate-700" />
+                        <RoomSection title="B棟房間" rooms={filteredBBeds} accent="bg-stone-100 text-stone-700" />
+                      </div>
+                    ) : null}
+
+                    {tab === "ig" ? (
+                      <div className="space-y-4">
+                        <div className="rounded-[1.75rem] border border-slate-200/80 bg-white/90 p-4 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                          <div className="flex items-center gap-2 text-sm font-black text-slate-700">
+                            <SearchIcon className="h-4 w-4" />
+                            搜尋 IG
+                          </div>
+                          <input
+                            value={igSearch}
+                            onChange={(e) => setIgSearch(e.target.value)}
+                            placeholder="輸入名字或 IG 帳號"
+                            className="mt-3 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-pink-400 focus:bg-white"
+                          />
+                        </div>
+
+                        {filteredIgList.length === 0 ? (
+                          <div className="rounded-[1.75rem] border border-dashed border-slate-200 bg-white p-5 text-center text-sm text-neutral-500">
+                            找不到這個人 😢
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-2 gap-3">
+                            {filteredIgList.map((item) => {
+                              const username = getInstagramUsername(item.url);
+                              return (
+                                <a
+                                  key={item.name}
+                                  href={item.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="rounded-xl border border-slate-200 bg-white p-3 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                                >
+                                  <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-full bg-pink-50 text-pink-600 ring-1 ring-pink-100">
+                                    <InstagramIcon className="h-6 w-6" />
+                                  </div>
+                                  <div className="font-bold text-slate-800">{item.name}</div>
+                                  <div className="mt-1 text-xs text-slate-500">@{username || "instagram"}</div>
+                                  <div className="mt-1 text-xs text-slate-400">點擊查看 IG</div>
+                                </a>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    ) : null}
+
+                    {tab === "team" ? (
+                      <div className="space-y-4">
+                        <div className="rounded-[1.9rem] border border-slate-200/80 bg-white/90 p-6 text-center shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[linear-gradient(135deg,_#0f172a_0%,_#334155_100%)] text-white shadow-xl">
+                            <PartyIcon className="h-7 w-7" />
+                          </div>
+                          <div className="mt-4 text-2xl font-black text-neutral-900">遊戲分組</div>
+                          <div className="mt-2 text-sm leading-7 text-neutral-700">
+                            分組名單將在 <span className="font-black text-slate-800">活動當日</span> 公布！
+                          </div>
+                          <div className="mt-2 text-sm leading-7 text-neutral-700">保留一點神秘感與驚喜感 ✨</div>
+                          <div className="mt-1 text-sm leading-7 text-neutral-700">大家一起期待一下吧，現場見 😆</div>
+                        </div>
+
+                        <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-white/90 p-4 text-center text-sm font-medium text-slate-500 shadow-[0_10px_30px_rgba(15,23,42,0.08)]">
+                          當天現場公布分組，請留意主持人說明 📢
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
-              ) : null}
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<EventInfoPage />);
+    </script>
+  </body>
+</html>
