@@ -318,4 +318,39 @@
           }
         });
 
-        // 標籤
+        // 標籤列滑鼠拖曳邏輯
+        let isDragging = false;
+        let startX;
+        let scrollLeft;
+
+        tabsContainer.addEventListener('mousedown', (e) => {
+          isDragging = true;
+          tabsContainer.classList.add('active');
+          startX = e.pageX - tabsContainer.offsetLeft;
+          scrollLeft = tabsContainer.scrollLeft;
+        });
+        tabsContainer.addEventListener('mouseleave', () => { isDragging = false; });
+        tabsContainer.addEventListener('mouseup', () => { isDragging = false; });
+        tabsContainer.addEventListener('mousemove', (e) => {
+          if (!isDragging) return;
+          e.preventDefault();
+          const x = e.pageX - tabsContainer.offsetLeft;
+          const walk = (x - startX) * 2; 
+          tabsContainer.scrollLeft = scrollLeft - walk;
+        });
+
+      } catch (error) {
+        console.error(error);
+        // 如果執行失敗，顯示紅色錯誤訊息在畫面上
+        document.getElementById('main-container').innerHTML = `
+          <div class="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl text-sm">
+            <strong>糟糕，網頁載入發生錯誤：</strong><br/>
+            ${error.message}<br/><br/>
+            請截圖此畫面或確認瀏覽器是否阻擋了 JavaScript。
+          </div>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>
