@@ -17,50 +17,53 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-    html {
-      /* 讓切換日期時的滑動更加平滑 */
-      scroll-behavior: smooth;
+    html, body {
+      /* 讓整個畫面鎖死，只允許手機框內滑動 */
+      overflow: hidden;
+      height: 100%;
     }
     /* 避免拖曳時選取文字 */
     .no-select {
       user-select: none;
       -webkit-user-select: none;
     }
+    /* 讓程式觸發的滑動更平滑 */
+    #app-container {
+      scroll-behavior: smooth;
+    }
   </style>
 </head>
-<!-- 全新漸層背景：從天空藍過渡到紫羅蘭，增添旅遊度假感 -->
-<body class="min-h-screen bg-gradient-to-br from-sky-100 via-blue-200 to-indigo-200 flex justify-center font-sans text-gray-800 py-0 sm:py-6">
+<!-- 背景固定，內容置中 -->
+<body class="bg-gradient-to-br from-sky-100 via-blue-200 to-indigo-200 flex items-center justify-center font-sans text-gray-800">
 
-  <!-- 模擬手機外框與容器：加入更強的立體陰影與圓角(在電腦版顯示時) -->
-  <div class="w-full sm:max-w-[414px] bg-slate-50 min-h-screen sm:min-h-[90vh] sm:rounded-[2.5rem] shadow-[0_20px_50px_rgba(29,78,216,0.15)] relative flex flex-col overflow-hidden border-4 border-white/40">
+  <!-- 模擬手機外框：成為獨立的滾動容器 (overflow-y-auto) -->
+  <div id="app-container" class="w-full sm:max-w-[414px] bg-slate-50 h-full sm:h-[90vh] sm:rounded-[3rem] shadow-[0_20px_50px_rgba(29,78,216,0.15)] relative flex flex-col overflow-y-auto overflow-x-hidden border-0 sm:border-[8px] border-white/60 hide-scrollbar">
     
-    <!-- 頂部固定區域 (包含 Header 與大項目標籤) -->
-    <div class="sticky top-0 z-40 w-full flex flex-col">
+    <!-- 頂部固定區域：絕對置頂 (Sticky) -->
+    <div class="sticky top-0 z-40 w-full flex flex-col shrink-0">
       
-      <!-- 全新設計的手機版 Header：漸層背景、裝飾圖示與精緻化的字體 -->
+      <!-- 手機版 Header -->
       <header class="bg-gradient-to-r from-blue-600 to-indigo-700 px-6 pt-10 pb-6 rounded-b-[2rem] relative z-20 shadow-[0_8px_30px_rgba(37,99,235,0.2)] overflow-hidden">
-        <!-- 裝飾用背景圖示 (半透明大圖示) -->
+        <!-- 裝飾用背景圖示 -->
         <i data-lucide="map" class="absolute -right-6 -bottom-6 w-32 h-32 text-white opacity-10 rotate-12 pointer-events-none"></i>
         
         <h1 class="text-2xl font-extrabold text-white flex items-center gap-2 relative z-10 tracking-wide">
-          <!-- 圖示縮小，顏色改為淺藍色點綴 -->
           <i data-lucide="plane" class="text-blue-200 w-5 h-5"></i>
           胡志明市之旅
         </h1>
         <p class="text-sm text-blue-100/90 mt-1.5 ml-7 relative z-10 font-medium">4/16 - 4/20 旅遊行程表</p>
       </header>
 
-      <!-- 橫向滑動的日期標籤 (毛玻璃效果) -->
-      <div class="bg-slate-50/90 backdrop-blur-md pt-5 pb-3 border-b border-gray-200/50 relative z-10">
+      <!-- 橫向滑動的日期標籤 -->
+      <div class="bg-slate-50/90 backdrop-blur-md pt-5 pb-3 border-b border-gray-200/50 relative z-10 shadow-sm">
         <div id="tabs-container" class="flex overflow-x-auto hide-scrollbar px-6 gap-3 cursor-grab active:cursor-grabbing no-select pb-1" style="touch-action: pan-x;">
           <!-- 標籤將由 JS 動態生成 -->
         </div>
       </div>
     </div>
 
-    <!-- 主要內容區 - 單欄手機版時間軸 -->
+    <!-- 主要內容區 -->
     <main class="flex-1 px-6 py-6 z-10" id="main-container">
-      <!-- 預設載入畫面 -->
       <div class="text-center text-gray-400 py-10" id="loading-text">
         <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i>
         行程載入中...
@@ -68,7 +71,7 @@
     </main>
 
     <!-- 頁尾 -->
-    <div class="text-center pb-10 pt-4 text-gray-400 text-xs flex flex-col items-center gap-2 z-10">
+    <div class="text-center pb-12 pt-4 text-gray-400 text-xs flex flex-col items-center gap-2 z-10 shrink-0">
       <i data-lucide="plane" class="w-4 h-4 text-gray-300"></i>
       <p>祝你有趟美好的胡志明之旅！</p>
     </div>
@@ -166,12 +169,12 @@
 
         const tabsContainer = document.getElementById('tabs-container');
         const mainContainer = document.getElementById('main-container');
+        const appContainer = document.getElementById('app-container');
 
         let tabsHtml = '';
         let mainHtml = '';
 
         itineraryData.forEach((day, dayIndex) => {
-          // 渲染 Tab (選中狀態換成漸層色)
           const activeClass = dayIndex === 0 
             ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/30 active-tab' 
             : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50';
@@ -186,7 +189,6 @@
             </button>
           `;
 
-          // 渲染行程列表
           let itemsHtml = '';
           day.items.forEach(item => {
             const config = categoryConfig[item.category] || categoryConfig.default;
@@ -228,12 +230,10 @@
 
             itemsHtml += `
               <div class="relative flex items-start">
-                <!-- 時間軸點點圖示：縮小尺寸 w-8 h-8，讓它更精緻 -->
                 <div class="flex items-center justify-center w-8 h-8 rounded-full border-[3px] border-slate-50 shrink-0 ${config.bg} ${config.color} absolute left-0 top-0 z-10">
                   <i data-lucide="${config.icon}" class="w-3.5 h-3.5"></i>
                 </div>
 
-                <!-- 卡片內容：調整間距配合縮小的圖示 -->
                 <div class="ml-auto w-[calc(100%-2.75rem)] p-4 rounded-2xl bg-white border border-gray-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)] relative z-0">
                   ${timeHtml}
                   <h3 class="text-[15px] font-bold text-gray-800 leading-snug mb-2">${item.title}</h3>
@@ -246,7 +246,6 @@
 
           mainHtml += `
             <section id="day-${day.date}" class="mb-10">
-              <!-- 日期標題 -->
               <div class="mb-6 flex items-center gap-3">
                 <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg text-sm font-bold tracking-wider">
                   ${day.date}
@@ -255,7 +254,6 @@
                   ${day.title}
                 </h2>
               </div>
-              <!-- 時間軸列表：調整中心線的位置以對齊縮小的圓圈 -->
               <div class="space-y-6 relative before:absolute before:inset-0 before:ml-4 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-gray-200 before:via-gray-300 before:to-gray-200">
                 ${itemsHtml}
               </div>
@@ -266,20 +264,20 @@
         tabsContainer.innerHTML = tabsHtml;
         mainContainer.innerHTML = mainHtml;
 
-        // 初始化 Lucide 圖示
         if (window.lucide) {
           lucide.createIcons();
         }
 
-        // --- 互動邏輯區 ---
+        // --- 互動邏輯區：全面改由容器內部滑動計算 ---
         window.scrollToDate = function(date) {
           const element = document.getElementById(`day-${date}`);
-          if (element) {
-            const headerOffset = 180; // 適應新的 header 高度
-            const elementPosition = element.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          if (element && appContainer) {
+            const headerOffset = 175; // 保留頂部區域的高度
+            // 計算目標元素與容器頂部的相對距離
+            const elementPosition = element.getBoundingClientRect().top - appContainer.getBoundingClientRect().top;
+            const offsetPosition = appContainer.scrollTop + elementPosition - headerOffset;
       
-            window.scrollTo({
+            appContainer.scrollTo({
               top: offsetPosition,
               behavior: 'smooth'
             });
@@ -297,15 +295,19 @@
           });
         }
 
-        window.addEventListener('scroll', () => {
-          const scrollPosition = window.scrollY + 250;
+        // 監聽改綁在手機容器 (appContainer) 身上
+        appContainer.addEventListener('scroll', () => {
           let currentActiveDate = itineraryData[0].date;
 
           for (let i = itineraryData.length - 1; i >= 0; i--) {
             const section = document.getElementById(`day-${itineraryData[i].date}`);
-            if (section && section.offsetTop <= scrollPosition) {
-              currentActiveDate = itineraryData[i].date;
-              break;
+            if (section) {
+              // 精準計算區塊距離容器頂部的高度
+              const elementPosition = section.getBoundingClientRect().top - appContainer.getBoundingClientRect().top;
+              if (elementPosition <= 200) {
+                currentActiveDate = itineraryData[i].date;
+                break;
+              }
             }
           }
 
@@ -315,7 +317,6 @@
           }
         });
 
-        // 標籤列滑鼠拖曳邏輯
         let isDragging = false;
         let startX;
         let scrollLeft;
