@@ -31,6 +31,14 @@
     #app-container {
       scroll-behavior: smooth;
     }
+    /* 切換頁面的淡入動畫 */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
   </style>
 </head>
 <!-- 背景固定，內容置中 -->
@@ -182,7 +190,7 @@
           tabsHtml += `
             <button 
               data-date="${day.date}"
-              onclick="scrollToDate('${day.date}')"
+              onclick="switchTab('${day.date}')"
               class="tab-btn flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium transition-all select-none ${activeClass}"
             >
               ${day.date} (${day.day})
@@ -244,8 +252,11 @@
             `;
           });
 
+          // 判斷是否為第一天（預設顯示），其餘隱藏
+          const sectionVisibility = dayIndex === 0 ? 'block fade-in' : 'hidden';
+
           mainHtml += `
-            <section id="day-${day.date}" class="mb-10">
+            <section id="day-${day.date}" class="day-section mb-10 ${sectionVisibility}">
               <div class="mb-6 flex items-center gap-3">
                 <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg text-sm font-bold tracking-wider">
                   ${day.date}
@@ -268,20 +279,33 @@
           lucide.createIcons();
         }
 
-        // --- 互動邏輯區：全面改由容器內部滑動計算 ---
-        window.scrollToDate = function(date) {
-          const element = document.getElementById(`day-${date}`);
-          if (element && appContainer) {
-            const headerOffset = 175; // 保留頂部區域的高度
-            // 計算目標元素與容器頂部的相對距離
-            const elementPosition = element.getBoundingClientRect().top - appContainer.getBoundingClientRect().top;
-            const offsetPosition = appContainer.scrollTop + elementPosition - headerOffset;
-      
+        // --- 互動邏輯區：全面改由切換分頁顯示 ---
+        window.switchTab = function(date) {
+          // 1. 更新上方標籤樣式
+          updateActiveTab(date);
+          
+          // 2. 隱藏所有行程區塊
+          document.querySelectorAll('.day-section').forEach(section => {
+            section.classList.add('hidden');
+            section.classList.remove('block', 'fade-in');
+          });
+
+          // 3. 顯示目標行程區塊，並加入淡入動畫
+          const targetSection = document.getElementById(`day-${date}`);
+          if (targetSection) {
+            targetSection.classList.remove('hidden');
+            // 微小延遲以觸發 CSS 動畫
+            setTimeout(() => {
+              targetSection.classList.add('block', 'fade-in');
+            }, 10);
+          }
+
+          // 4. 切換後讓滾動條回到最頂部
+          if (appContainer) {
             appContainer.scrollTo({
-              top: offsetPosition,
+              top: 0,
               behavior: 'smooth'
             });
-            updateActiveTab(date);
           }
         };
 
@@ -295,28 +319,7 @@
           });
         }
 
-        // 監聽改綁在手機容器 (appContainer) 身上
-        appContainer.addEventListener('scroll', () => {
-          let currentActiveDate = itineraryData[0].date;
-
-          for (let i = itineraryData.length - 1; i >= 0; i--) {
-            const section = document.getElementById(`day-${itineraryData[i].date}`);
-            if (section) {
-              // 精準計算區塊距離容器頂部的高度
-              const elementPosition = section.getBoundingClientRect().top - appContainer.getBoundingClientRect().top;
-              if (elementPosition <= 200) {
-                currentActiveDate = itineraryData[i].date;
-                break;
-              }
-            }
-          }
-
-          const currentActiveBtn = document.querySelector('.active-tab');
-          if (currentActiveBtn && currentActiveBtn.getAttribute('data-date') !== currentActiveDate) {
-            updateActiveTab(currentActiveDate);
-          }
-        });
-
+        // 標籤列滑鼠拖曳邏輯
         let isDragging = false;
         let startX;
         let scrollLeft;
