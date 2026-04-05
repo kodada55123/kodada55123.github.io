@@ -150,4 +150,201 @@
       plane: { icon: "plane", color: "text-sky-500", bg: "bg-sky-100" },
       food: { icon: "utensils", color: "text-orange-500", bg: "bg-orange-100" },
       shopping: { icon: "shopping-bag", color: "text-pink-500", bg: "bg-pink-100" },
-      attraction: { icon
+      attraction: { icon: "map-pin", color: "text-emerald-500", bg: "bg-emerald-100" },
+      spa: { icon: "sparkles", color: "text-purple-500", bg: "bg-purple-100" },
+      coffee: { icon: "coffee", color: "text-amber-600", bg: "bg-amber-100" },
+      ticket: { icon: "ticket", color: "text-red-500", bg: "bg-red-100" },
+      map: { icon: "map", color: "text-teal-500", bg: "bg-teal-100" },
+      moon: { icon: "moon", color: "text-slate-600", bg: "bg-slate-200" },
+      wine: { icon: "wine", color: "text-rose-500", bg: "bg-rose-100" },
+      default: { icon: "map-pin", color: "text-gray-500", bg: "bg-gray-100" }
+    };
+
+    // --- 渲染畫面區 ---
+    const tabsContainer = document.getElementById('tabs-container');
+    const mainContainer = document.getElementById('main-container');
+
+    function renderApp() {
+      let tabsHtml = '';
+      let mainHtml = '';
+
+      itineraryData.forEach((day, dayIndex) => {
+        // 渲染 Tab
+        tabsHtml += `
+          <button 
+            data-date="${day.date}"
+            onclick="scrollToDate('${day.date}')"
+            class="tab-btn flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all select-none ${dayIndex === 0 ? 'bg-blue-600 text-white shadow-md shadow-blue-200 active-tab' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-100'}"
+          >
+            ${day.date} (${day.day})
+          </button>
+        `;
+
+        // 渲染行程列表
+        let itemsHtml = '';
+        day.items.forEach(item => {
+          const config = categoryConfig[item.category] || categoryConfig.default;
+          
+          let timeHtml = '';
+          if (item.time) {
+            timeHtml = `
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-50 text-gray-600 text-xs font-medium mb-3 border border-gray-100">
+                <i data-lucide="clock" class="w-3 h-3"></i>
+                ${item.time}
+              </div>
+            `;
+          }
+
+          let notesHtml = '';
+          if (item.notes) {
+            notesHtml = `
+              <p class="text-sm text-gray-500 mb-4 bg-gray-50 p-2.5 rounded-lg">
+                ${item.notes}
+              </p>
+            `;
+          }
+
+          let mapHtml = '';
+          if (item.mapUrl) {
+            mapHtml = `
+              <a 
+                href="${item.mapUrl}" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg transition-colors w-full justify-center mt-2"
+              >
+                <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+                開啟地圖導航
+                <i data-lucide="external-link" class="w-3 h-3 ml-1 opacity-70"></i>
+              </a>
+            `;
+          }
+
+          itemsHtml += `
+            <div class="relative flex items-start">
+              <!-- 時間軸點點圖示 -->
+              <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-gray-50 shrink-0 ${config.bg} ${config.color} absolute left-0 top-0">
+                <i data-lucide="${config.icon}" class="w-4 h-4"></i>
+              </div>
+
+              <!-- 卡片內容 -->
+              <div class="ml-auto w-[calc(100%-3.5rem)] p-4 rounded-2xl bg-white border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] relative z-0">
+                ${timeHtml}
+                <h3 class="text-base font-bold text-gray-800 leading-snug mb-2">${item.title}</h3>
+                ${notesHtml}
+                ${mapHtml}
+              </div>
+            </div>
+          `;
+        });
+
+        mainHtml += `
+          <section id="day-${day.date}" class="mb-10">
+            <!-- 日期標題 -->
+            <div class="mb-6 flex items-center gap-3">
+              <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-sm font-bold tracking-wider">
+                ${day.date}
+              </span>
+              <h2 class="text-xl font-bold text-gray-900">
+                ${day.title}
+              </h2>
+            </div>
+            <!-- 時間軸列表 -->
+            <div class="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-gray-200 before:via-gray-300 before:to-gray-200">
+              ${itemsHtml}
+            </div>
+          </section>
+        `;
+      });
+
+      tabsContainer.innerHTML = tabsHtml;
+      mainContainer.innerHTML = mainHtml;
+
+      // 初始化 Lucide 圖示
+      lucide.createIcons();
+    }
+
+    // --- 互動邏輯區 ---
+
+    // 點擊滑動到指定日期
+    function scrollToDate(date) {
+      const element = document.getElementById(`day-${date}`);
+      if (element) {
+        // 考慮到 header 的高度偏移
+        const headerOffset = 140; 
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+  
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+        updateActiveTab(date);
+      }
+    }
+
+    // 更新作用中的標籤樣式
+    function updateActiveTab(activeDate) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-date') === activeDate) {
+          btn.className = 'tab-btn flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all select-none bg-blue-600 text-white shadow-md shadow-blue-200 active-tab';
+        } else {
+          btn.className = 'tab-btn flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all select-none bg-white text-gray-600 border border-gray-200 hover:bg-gray-100';
+        }
+      });
+    }
+
+    // 監聽滾動以自動切換標籤 (Scroll Spy)
+    window.addEventListener('scroll', () => {
+      const scrollPosition = window.scrollY + 200;
+      let currentActiveDate = itineraryData[0].date;
+
+      for (let i = itineraryData.length - 1; i >= 0; i--) {
+        const section = document.getElementById(`day-${itineraryData[i].date}`);
+        if (section && section.offsetTop <= scrollPosition) {
+          currentActiveDate = itineraryData[i].date;
+          break;
+        }
+      }
+
+      // 如果當前作用的標籤不是記錄的那個，就更新它
+      const currentActiveBtn = document.querySelector('.active-tab');
+      if (currentActiveBtn && currentActiveBtn.getAttribute('data-date') !== currentActiveDate) {
+        updateActiveTab(currentActiveDate);
+      }
+    });
+
+    // 標籤列滑鼠拖曳邏輯
+    let isDragging = false;
+    let startX;
+    let scrollLeft;
+
+    tabsContainer.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      tabsContainer.classList.add('active');
+      startX = e.pageX - tabsContainer.offsetLeft;
+      scrollLeft = tabsContainer.scrollLeft;
+    });
+
+    tabsContainer.addEventListener('mouseleave', () => {
+      isDragging = false;
+    });
+
+    tabsContainer.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    tabsContainer.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - tabsContainer.offsetLeft;
+      const walk = (x - startX) * 2; // 滑動速度
+      tabsContainer.scrollLeft = scrollLeft - walk;
+    });
+
+    // 啟動渲染
+    renderApp();
+
+  </script>
+</body>
+</html>
