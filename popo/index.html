@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>胡志明市之旅</title>
+  <!-- 引入 Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- 引入 Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- 引入 Lucide Icons (更換為較穩定的 jsdelivr CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
   <style>
     /* 隱藏捲軸但保留滾動功能 */
     .hide-scrollbar::-webkit-scrollbar {
@@ -50,7 +51,10 @@
 
     <!-- 主要內容區 - 單欄手機版時間軸 -->
     <main class="flex-1 px-6 py-6 z-10" id="main-container">
-      <!-- 行程內容將由 JS 動態生成 -->
+      <!-- 如果有錯誤會顯示在這裡，預設為載入中 -->
+      <div class="text-center text-gray-400 py-10" id="loading-text">
+        行程載入中...
+      </div>
     </main>
 
     <!-- 頁尾 -->
@@ -61,290 +65,257 @@
   </div>
 
   <script>
-    // --- 資料設定區 ---
-    const itineraryData = [
-      {
-        date: "4/16",
-        day: "四",
-        title: "抵達與市區探索",
-        items: [
-          { time: "07:45 ~ 12:00", title: "抵達市區", category: "transport", notes: "搭機抵達並使用 Grab 叫車回市區" },
-          { time: "12:00", title: "入住飯店：Express by M Village Nguyễn Du", category: "hotel", notes: "先寄放行李或辦理入住", mapUrl: "https://maps.app.goo.gl/V9RmXux7AEqBgzAR8" },
-          { title: "換匯：濱城市場-Ha Tam Jewelry", category: "shopping", notes: "熱門換匯所，匯率通常不錯", mapUrl: "https://maps.app.goo.gl/MGkhYAZsihSKxm3AA" },
-          { title: "午餐：Phở Việt Nam", category: "food", notes: "必比登推薦美食", mapUrl: "https://maps.app.goo.gl/zXR8gDfqtehRboxz9" },
-          { title: "逛街：濱城市場", category: "shopping", notes: "記得五折喊價！" },
-          { title: "景點：胡志明市大劇院", category: "attraction", mapUrl: "https://maps.app.goo.gl/JM2pJrSmxvHFKdcR8" },
-          { title: "下午茶：咖啡公寓", category: "coffee", notes: "喝咖啡納涼休息", mapUrl: "https://maps.app.goo.gl/WPVesdvTChzy32NVA" },
-          { title: "按摩：CiCi International Spa", category: "spa", notes: "Foot & Body Massage, Hair Spa, Facial Care 顏面清潔按摩", mapUrl: "https://maps.app.goo.gl/XTZtrofYCV9ZnG3a7" },
-          { title: "任務：預約 miu miu spa", category: "ticket", notes: "為後面的行程先預約好", mapUrl: "https://maps.app.goo.gl/7atYGPvtr3aiuYpr6" },
-          { title: "晚餐：鴉片工廠 The Refinery", category: "food", notes: "米其林推薦餐廳", mapUrl: "https://maps.app.goo.gl/qtXNEcGDSsy78AUAA" },
-          { title: "夜生活：逛日本街 (按摩二選一)", category: "moon", notes: "1. SOME Spa For Men / 2. TarZan Spa For Men", mapUrl: "https://maps.app.goo.gl/ysYLqC3xqcUoD6js7" }
-        ]
-      },
-      {
-        date: "4/17",
-        day: "五",
-        title: "郊區一日遊",
-        items: [
-          { title: "早餐：超商隨意吃", category: "food" },
-          { time: "07:30 ~ 17:30", title: "Klook 包團：古芝地道 & 湄公河", category: "map", notes: "一日遊行程", mapUrl: "https://www.klook.com/zh-TW/activity/29990-cu-chi-tunnels-ben-tre-ham-luong-day-tour-ho-chi-minh/" },
-          { title: "正常按摩 (選擇一)", category: "spa", notes: "1. Hum Spa / 2. Norah Spa (包含洗頭)", mapUrl: "https://maps.app.goo.gl/BgkGJFMoedN3G5QH7" },
-          { title: "正常按摩 (選擇二)", category: "spa", notes: "新加入的推薦按摩", mapUrl: "https://maps.app.goo.gl/D4iH57q8GAwPp1cSA" },
-          { title: "夜市：范五老街 (Phạm Ngũ Lão)", category: "moon", notes: "逛逛夜市，旁邊就是 Bui Vien Walking Street", mapUrl: "https://maps.app.goo.gl/hUSd83XSpwkKgQZ38" },
-          { time: "22:00", title: "三溫暖 (選擇一：69Sauna)", category: "spa", notes: "在地體驗", mapUrl: "https://maps.app.goo.gl/UUD9XUpx4133WsPt6" },
-          { time: "22:00", title: "三溫暖 (選擇二)", category: "spa", notes: "新加入的推薦三溫暖", mapUrl: "https://maps.app.goo.gl/nMjwCJTM87R4KqLM9" }
-        ]
-      },
-      {
-        date: "4/18",
-        day: "六",
-        title: "換飯店與放鬆日",
-        items: [
-          { title: "入住新飯店：Vien Dong Hotel", category: "hotel", notes: "靠近 Bui Vien Walking Street", mapUrl: "https://maps.app.goo.gl/EnhgpSQ2mu8f2Rwq7" },
-          { title: "早午餐：Meat & Meet BBQ", category: "food", notes: "Lê Thị Riêng，east推薦", mapUrl: "https://maps.app.goo.gl/U1FSKvRBSgmyQKhR9" },
-          { title: "按摩：miu miu spa", category: "spa", mapUrl: "https://maps.app.goo.gl/7atYGPvtr3aiuYpr6" },
-          { time: "12:00", title: "高級三溫暖：NaDam Spa", category: "spa", notes: "含吃喝，非常高級", mapUrl: "https://maps.app.goo.gl/wrVD7va3XhzGLyCU8" },
-          { title: "晚餐夜市：Ben Nghe Street Food", category: "food", notes: "環境比較乾淨的夜市", mapUrl: "https://maps.app.goo.gl/iLvMsZt58dnCxudD8" },
-          { time: "20:00 後", title: "酒吧：Frolic Bar", category: "wine", notes: "注意 20:00 才開始營業", mapUrl: "https://maps.app.goo.gl/3kYUnQs6587iHG8K7" }
-        ]
-      },
-      {
-        date: "4/19",
-        day: "日",
-        title: "歷史文化與購物",
-        items: [
-          { time: "10:00 ~ 23:00", title: "早午餐：Cocotte 法式料理", category: "food", notes: "品嚐平價法餐", mapUrl: "https://maps.app.goo.gl/NzBkD8TuqfZhVo8y6" },
-          { title: "景點：戰爭遺跡博物館", category: "attraction", mapUrl: "https://maps.app.goo.gl/rED2vtYxNNNVCCSa7" },
-          { title: "景點：獨立宮", category: "attraction", mapUrl: "https://maps.app.goo.gl/z2ExVsV7CaAc3FqE7" },
-          { time: "15:00 ~ 18:00", title: "吃到飽：Buffet Poseidon", category: "food", notes: "Vincom Plaza 3/2 Quận 10 (需先訂位)", mapUrl: "https://maps.app.goo.gl/UZULTQ2wqfKCwkQb7" },
-          { title: "購物：Vincom Center Dong Khoi", category: "shopping", notes: "逛購物中心、買伴手禮", mapUrl: "https://maps.app.goo.gl/aNfSixtMXwGRaC9e6" },
-          { title: "晚餐選擇：錦麗河粉", category: "food", notes: "被譽為最好吃的河粉", mapUrl: "https://maps.app.goo.gl/iyvh3m6g9Kfb1NaRA" },
-          { title: "夜市：Ho Thi Ky Food Street", category: "moon", mapUrl: "https://maps.app.goo.gl/b4QkSwYnTzw9Njy56" }
-        ]
-      },
-      {
-        date: "4/20",
-        day: "一",
-        title: "採買與回程",
-        items: [
-          { title: "採買伴手禮：Maison Marou Flagship Saigon", category: "shopping", notes: "越南精品巧克力專賣店", mapUrl: "https://maps.app.goo.gl/Uqs9j9xXKm4jLE6W9" },
-          { time: "13:00", title: "前往機場", category: "transport" },
-          { time: "16:30", title: "搭機回程", category: "plane" }
-        ]
-      },
-      {
-        date: "推薦",
-        day: "名單",
-        title: "精選推薦口袋名單",
-        items: [
-          { title: "推薦餐廳", category: "food", notes: "行程備用或聚餐好去處", mapUrl: "https://maps.app.goo.gl/AdeyqkWKF7jgZMAn9" },
-          { title: "推薦按摩", category: "spa", notes: "隨時想放鬆的備用選擇", mapUrl: "https://maps.app.goo.gl/FYkQn1sWNSZfMnNC7" },
-          { title: "推薦三溫暖", category: "spa", notes: "值得體驗的桑拿口袋名單", mapUrl: "https://maps.app.goo.gl/t6azhZ7zCWB6rJqv5" }
-        ]
-      }
-    ];
+    // 確保整個網頁的 DOM 都載入完成後才執行 JS
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      try {
+        // --- 資料設定區 ---
+        const itineraryData = [
+          {
+            date: "4/16",
+            day: "四",
+            title: "抵達與市區探索",
+            items: [
+              { time: "07:45 ~ 12:00", title: "抵達市區", category: "transport", notes: "搭機抵達並使用 Grab 叫車回市區" },
+              { time: "12:00", title: "入住飯店：Express by M Village Nguyễn Du", category: "hotel", notes: "先寄放行李或辦理入住", mapUrl: "https://maps.app.goo.gl/V9RmXux7AEqBgzAR8" },
+              { title: "換匯：濱城市場-Ha Tam Jewelry", category: "shopping", notes: "熱門換匯所，匯率通常不錯", mapUrl: "https://maps.app.goo.gl/MGkhYAZsihSKxm3AA" },
+              { title: "午餐：Phở Việt Nam", category: "food", notes: "必比登推薦美食", mapUrl: "https://maps.app.goo.gl/zXR8gDfqtehRboxz9" },
+              { title: "逛街：濱城市場", category: "shopping", notes: "記得五折喊價！" },
+              { title: "景點：胡志明市大劇院", category: "attraction", mapUrl: "https://maps.app.goo.gl/JM2pJrSmxvHFKdcR8" },
+              { title: "下午茶：咖啡公寓", category: "coffee", notes: "喝咖啡納涼休息", mapUrl: "https://maps.app.goo.gl/WPVesdvTChzy32NVA" },
+              { title: "按摩：CiCi International Spa", category: "spa", notes: "Foot & Body Massage, Hair Spa, Facial Care 顏面清潔按摩", mapUrl: "https://maps.app.goo.gl/XTZtrofYCV9ZnG3a7" },
+              { title: "任務：預約 miu miu spa", category: "ticket", notes: "為後面的行程先預約好", mapUrl: "https://maps.app.goo.gl/7atYGPvtr3aiuYpr6" },
+              { title: "晚餐：鴉片工廠 The Refinery", category: "food", notes: "米其林推薦餐廳", mapUrl: "https://maps.app.goo.gl/qtXNEcGDSsy78AUAA" },
+              { title: "夜生活：逛日本街 (按摩二選一)", category: "moon", notes: "1. SOME Spa For Men / 2. TarZan Spa For Men", mapUrl: "https://maps.app.goo.gl/ysYLqC3xqcUoD6js7" }
+            ]
+          },
+          {
+            date: "4/17",
+            day: "五",
+            title: "郊區一日遊",
+            items: [
+              { title: "早餐：超商隨意吃", category: "food" },
+              { time: "07:30 ~ 17:30", title: "Klook 包團：古芝地道 & 湄公河", category: "map", notes: "一日遊行程", mapUrl: "https://www.klook.com/zh-TW/activity/29990-cu-chi-tunnels-ben-tre-ham-luong-day-tour-ho-chi-minh/" },
+              { title: "正常按摩 (選擇一)", category: "spa", notes: "1. Hum Spa / 2. Norah Spa (包含洗頭)", mapUrl: "https://maps.app.goo.gl/BgkGJFMoedN3G5QH7" },
+              { title: "正常按摩 (選擇二)", category: "spa", notes: "新加入的推薦按摩", mapUrl: "https://maps.app.goo.gl/D4iH57q8GAwPp1cSA" },
+              { title: "夜市：范五老街 (Phạm Ngũ Lão)", category: "moon", notes: "逛逛夜市，旁邊就是 Bui Vien Walking Street", mapUrl: "https://maps.app.goo.gl/hUSd83XSpwkKgQZ38" },
+              { time: "22:00", title: "三溫暖 (選擇一：69Sauna)", category: "spa", notes: "在地體驗", mapUrl: "https://maps.app.goo.gl/UUD9XUpx4133WsPt6" },
+              { time: "22:00", title: "三溫暖 (選擇二)", category: "spa", notes: "新加入的推薦三溫暖", mapUrl: "https://maps.app.goo.gl/nMjwCJTM87R4KqLM9" }
+            ]
+          },
+          {
+            date: "4/18",
+            day: "六",
+            title: "換飯店與放鬆日",
+            items: [
+              { title: "入住新飯店：Vien Dong Hotel", category: "hotel", notes: "靠近 Bui Vien Walking Street", mapUrl: "https://maps.app.goo.gl/EnhgpSQ2mu8f2Rwq7" },
+              { title: "早午餐：Meat & Meet BBQ", category: "food", notes: "Lê Thị Riêng，east推薦", mapUrl: "https://maps.app.goo.gl/U1FSKvRBSgmyQKhR9" },
+              { title: "按摩：miu miu spa", category: "spa", mapUrl: "https://maps.app.goo.gl/7atYGPvtr3aiuYpr6" },
+              { time: "12:00", title: "高級三溫暖：NaDam Spa", category: "spa", notes: "含吃喝，非常高級", mapUrl: "https://maps.app.goo.gl/wrVD7va3XhzGLyCU8" },
+              { title: "晚餐夜市：Ben Nghe Street Food", category: "food", notes: "環境比較乾淨的夜市", mapUrl: "https://maps.app.goo.gl/iLvMsZt58dnCxudD8" },
+              { time: "20:00 後", title: "酒吧：Frolic Bar", category: "wine", notes: "注意 20:00 才開始營業", mapUrl: "https://maps.app.goo.gl/3kYUnQs6587iHG8K7" }
+            ]
+          },
+          {
+            date: "4/19",
+            day: "日",
+            title: "歷史文化與購物",
+            items: [
+              { time: "10:00 ~ 23:00", title: "早午餐：Cocotte 法式料理", category: "food", notes: "品嚐平價法餐", mapUrl: "https://maps.app.goo.gl/NzBkD8TuqfZhVo8y6" },
+              { title: "景點：戰爭遺跡博物館", category: "attraction", mapUrl: "https://maps.app.goo.gl/rED2vtYxNNNVCCSa7" },
+              { title: "景點：獨立宮", category: "attraction", mapUrl: "https://maps.app.goo.gl/z2ExVsV7CaAc3FqE7" },
+              { time: "15:00 ~ 18:00", title: "吃到飽：Buffet Poseidon", category: "food", notes: "Vincom Plaza 3/2 Quận 10 (需先訂位)", mapUrl: "https://maps.app.goo.gl/UZULTQ2wqfKCwkQb7" },
+              { title: "購物：Vincom Center Dong Khoi", category: "shopping", notes: "逛購物中心、買伴手禮", mapUrl: "https://maps.app.goo.gl/aNfSixtMXwGRaC9e6" },
+              { title: "晚餐選擇：錦麗河粉", category: "food", notes: "被譽為最好吃的河粉", mapUrl: "https://maps.app.goo.gl/iyvh3m6g9Kfb1NaRA" },
+              { title: "夜市：Ho Thi Ky Food Street", category: "moon", mapUrl: "https://maps.app.goo.gl/b4QkSwYnTzw9Njy56" }
+            ]
+          },
+          {
+            date: "4/20",
+            day: "一",
+            title: "採買與回程",
+            items: [
+              { title: "採買伴手禮：Maison Marou Flagship Saigon", category: "shopping", notes: "越南精品巧克力專賣店", mapUrl: "https://maps.app.goo.gl/Uqs9j9xXKm4jLE6W9" },
+              { time: "13:00", title: "前往機場", category: "transport" },
+              { time: "16:30", title: "搭機回程", category: "plane" }
+            ]
+          },
+          {
+            date: "推薦",
+            day: "名單",
+            title: "精選推薦口袋名單",
+            items: [
+              { title: "推薦餐廳", category: "food", notes: "行程備用或聚餐好去處", mapUrl: "https://maps.app.goo.gl/AdeyqkWKF7jgZMAn9" },
+              { title: "推薦按摩", category: "spa", notes: "隨時想放鬆的備用選擇", mapUrl: "https://maps.app.goo.gl/FYkQn1sWNSZfMnNC7" },
+              { title: "推薦三溫暖", category: "spa", notes: "值得體驗的桑拿口袋名單", mapUrl: "https://maps.app.goo.gl/t6azhZ7zCWB6rJqv5" }
+            ]
+          }
+        ];
 
-    const categoryConfig = {
-      hotel: { icon: "bed", color: "text-indigo-500", bg: "bg-indigo-100" },
-      transport: { icon: "car", color: "text-blue-500", bg: "bg-blue-100" },
-      plane: { icon: "plane", color: "text-sky-500", bg: "bg-sky-100" },
-      food: { icon: "utensils", color: "text-orange-500", bg: "bg-orange-100" },
-      shopping: { icon: "shopping-bag", color: "text-pink-500", bg: "bg-pink-100" },
-      attraction: { icon: "map-pin", color: "text-emerald-500", bg: "bg-emerald-100" },
-      spa: { icon: "sparkles", color: "text-purple-500", bg: "bg-purple-100" },
-      coffee: { icon: "coffee", color: "text-amber-600", bg: "bg-amber-100" },
-      ticket: { icon: "ticket", color: "text-red-500", bg: "bg-red-100" },
-      map: { icon: "map", color: "text-teal-500", bg: "bg-teal-100" },
-      moon: { icon: "moon", color: "text-slate-600", bg: "bg-slate-200" },
-      wine: { icon: "wine", color: "text-rose-500", bg: "bg-rose-100" },
-      default: { icon: "map-pin", color: "text-gray-500", bg: "bg-gray-100" }
-    };
+        const categoryConfig = {
+          hotel: { icon: "bed", color: "text-indigo-500", bg: "bg-indigo-100" },
+          transport: { icon: "car", color: "text-blue-500", bg: "bg-blue-100" },
+          plane: { icon: "plane", color: "text-sky-500", bg: "bg-sky-100" },
+          food: { icon: "utensils", color: "text-orange-500", bg: "bg-orange-100" },
+          shopping: { icon: "shopping-bag", color: "text-pink-500", bg: "bg-pink-100" },
+          attraction: { icon: "map-pin", color: "text-emerald-500", bg: "bg-emerald-100" },
+          spa: { icon: "sparkles", color: "text-purple-500", bg: "bg-purple-100" },
+          coffee: { icon: "coffee", color: "text-amber-600", bg: "bg-amber-100" },
+          ticket: { icon: "ticket", color: "text-red-500", bg: "bg-red-100" },
+          map: { icon: "map", color: "text-teal-500", bg: "bg-teal-100" },
+          moon: { icon: "moon", color: "text-slate-600", bg: "bg-slate-200" },
+          wine: { icon: "wine", color: "text-rose-500", bg: "bg-rose-100" },
+          default: { icon: "map-pin", color: "text-gray-500", bg: "bg-gray-100" }
+        };
 
-    // --- 渲染畫面區 ---
-    const tabsContainer = document.getElementById('tabs-container');
-    const mainContainer = document.getElementById('main-container');
+        // --- 渲染畫面區 ---
+        const tabsContainer = document.getElementById('tabs-container');
+        const mainContainer = document.getElementById('main-container');
 
-    function renderApp() {
-      let tabsHtml = '';
-      let mainHtml = '';
+        let tabsHtml = '';
+        let mainHtml = '';
 
-      itineraryData.forEach((day, dayIndex) => {
-        // 渲染 Tab
-        tabsHtml += `
-          <button 
-            data-date="${day.date}"
-            onclick="scrollToDate('${day.date}')"
-            class="tab-btn flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all select-none ${dayIndex === 0 ? 'bg-blue-600 text-white shadow-md shadow-blue-200 active-tab' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-100'}"
-          >
-            ${day.date} (${day.day})
-          </button>
-        `;
+        itineraryData.forEach((day, dayIndex) => {
+          // 渲染 Tab
+          tabsHtml += `
+            <button 
+              data-date="${day.date}"
+              onclick="scrollToDate('${day.date}')"
+              class="tab-btn flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all select-none ${dayIndex === 0 ? 'bg-blue-600 text-white shadow-md shadow-blue-200 active-tab' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-100'}"
+            >
+              ${day.date} (${day.day})
+            </button>
+          `;
 
-        // 渲染行程列表
-        let itemsHtml = '';
-        day.items.forEach(item => {
-          const config = categoryConfig[item.category] || categoryConfig.default;
-          
-          let timeHtml = '';
-          if (item.time) {
-            timeHtml = `
-              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-50 text-gray-600 text-xs font-medium mb-3 border border-gray-100">
-                <i data-lucide="clock" class="w-3 h-3"></i>
-                ${item.time}
+          // 渲染行程列表
+          let itemsHtml = '';
+          day.items.forEach(item => {
+            const config = categoryConfig[item.category] || categoryConfig.default;
+            
+            let timeHtml = '';
+            if (item.time) {
+              timeHtml = `
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gray-50 text-gray-600 text-xs font-medium mb-3 border border-gray-100">
+                  <i data-lucide="clock" class="w-3 h-3"></i>
+                  ${item.time}
+                </div>
+              `;
+            }
+
+            let notesHtml = '';
+            if (item.notes) {
+              notesHtml = `
+                <p class="text-sm text-gray-500 mb-4 bg-gray-50 p-2.5 rounded-lg">
+                  ${item.notes}
+                </p>
+              `;
+            }
+
+            let mapHtml = '';
+            if (item.mapUrl) {
+              mapHtml = `
+                <a 
+                  href="${item.mapUrl}" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg transition-colors w-full justify-center mt-2"
+                >
+                  <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+                  開啟地圖導航
+                  <i data-lucide="external-link" class="w-3 h-3 ml-1 opacity-70"></i>
+                </a>
+              `;
+            }
+
+            itemsHtml += `
+              <div class="relative flex items-start">
+                <!-- 時間軸點點圖示 -->
+                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-gray-50 shrink-0 ${config.bg} ${config.color} absolute left-0 top-0">
+                  <i data-lucide="${config.icon}" class="w-4 h-4"></i>
+                </div>
+
+                <!-- 卡片內容 -->
+                <div class="ml-auto w-[calc(100%-3.5rem)] p-4 rounded-2xl bg-white border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] relative z-0">
+                  ${timeHtml}
+                  <h3 class="text-base font-bold text-gray-800 leading-snug mb-2">${item.title}</h3>
+                  ${notesHtml}
+                  ${mapHtml}
+                </div>
               </div>
             `;
-          }
+          });
 
-          let notesHtml = '';
-          if (item.notes) {
-            notesHtml = `
-              <p class="text-sm text-gray-500 mb-4 bg-gray-50 p-2.5 rounded-lg">
-                ${item.notes}
-              </p>
-            `;
-          }
-
-          let mapHtml = '';
-          if (item.mapUrl) {
-            mapHtml = `
-              <a 
-                href="${item.mapUrl}" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg transition-colors w-full justify-center mt-2"
-              >
-                <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
-                開啟地圖導航
-                <i data-lucide="external-link" class="w-3 h-3 ml-1 opacity-70"></i>
-              </a>
-            `;
-          }
-
-          itemsHtml += `
-            <div class="relative flex items-start">
-              <!-- 時間軸點點圖示 -->
-              <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-gray-50 shrink-0 ${config.bg} ${config.color} absolute left-0 top-0">
-                <i data-lucide="${config.icon}" class="w-4 h-4"></i>
+          mainHtml += `
+            <section id="day-${day.date}" class="mb-10">
+              <!-- 日期標題 -->
+              <div class="mb-6 flex items-center gap-3">
+                <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-sm font-bold tracking-wider">
+                  ${day.date}
+                </span>
+                <h2 class="text-xl font-bold text-gray-900">
+                  ${day.title}
+                </h2>
               </div>
-
-              <!-- 卡片內容 -->
-              <div class="ml-auto w-[calc(100%-3.5rem)] p-4 rounded-2xl bg-white border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] relative z-0">
-                ${timeHtml}
-                <h3 class="text-base font-bold text-gray-800 leading-snug mb-2">${item.title}</h3>
-                ${notesHtml}
-                ${mapHtml}
+              <!-- 時間軸列表 -->
+              <div class="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-gray-200 before:via-gray-300 before:to-gray-200">
+                ${itemsHtml}
               </div>
-            </div>
+            </section>
           `;
         });
 
-        mainHtml += `
-          <section id="day-${day.date}" class="mb-10">
-            <!-- 日期標題 -->
-            <div class="mb-6 flex items-center gap-3">
-              <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-sm font-bold tracking-wider">
-                ${day.date}
-              </span>
-              <h2 class="text-xl font-bold text-gray-900">
-                ${day.title}
-              </h2>
-            </div>
-            <!-- 時間軸列表 -->
-            <div class="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-gray-200 before:via-gray-300 before:to-gray-200">
-              ${itemsHtml}
-            </div>
-          </section>
-        `;
-      });
+        tabsContainer.innerHTML = tabsHtml;
+        mainContainer.innerHTML = mainHtml;
 
-      tabsContainer.innerHTML = tabsHtml;
-      mainContainer.innerHTML = mainHtml;
+        // 初始化 Lucide 圖示 (加了防呆檢查)
+        if (window.lucide) {
+          lucide.createIcons();
+        }
 
-      // 初始化 Lucide 圖示
-      lucide.createIcons();
-    }
+        // --- 互動邏輯區 ---
 
-    // --- 互動邏輯區 ---
+        // 將 scrollToDate 綁定到 window 讓 HTML 上的 onclick 抓得到
+        window.scrollToDate = function(date) {
+          const element = document.getElementById(`day-${date}`);
+          if (element) {
+            const headerOffset = 140; 
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
+            updateActiveTab(date);
+          }
+        };
 
-    // 點擊滑動到指定日期
-    function scrollToDate(date) {
-      const element = document.getElementById(`day-${date}`);
-      if (element) {
-        // 考慮到 header 的高度偏移
-        const headerOffset = 140; 
-        const elementPosition = element.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-  
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
+        function updateActiveTab(activeDate) {
+          document.querySelectorAll('.tab-btn').forEach(btn => {
+            if (btn.getAttribute('data-date') === activeDate) {
+              btn.className = 'tab-btn flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all select-none bg-blue-600 text-white shadow-md shadow-blue-200 active-tab';
+            } else {
+              btn.className = 'tab-btn flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all select-none bg-white text-gray-600 border border-gray-200 hover:bg-gray-100';
+            }
+          });
+        }
+
+        window.addEventListener('scroll', () => {
+          const scrollPosition = window.scrollY + 200;
+          let currentActiveDate = itineraryData[0].date;
+
+          for (let i = itineraryData.length - 1; i >= 0; i--) {
+            const section = document.getElementById(`day-${itineraryData[i].date}`);
+            if (section && section.offsetTop <= scrollPosition) {
+              currentActiveDate = itineraryData[i].date;
+              break;
+            }
+          }
+
+          const currentActiveBtn = document.querySelector('.active-tab');
+          if (currentActiveBtn && currentActiveBtn.getAttribute('data-date') !== currentActiveDate) {
+            updateActiveTab(currentActiveDate);
+          }
         });
-        updateActiveTab(date);
-      }
-    }
 
-    // 更新作用中的標籤樣式
-    function updateActiveTab(activeDate) {
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        if (btn.getAttribute('data-date') === activeDate) {
-          btn.className = 'tab-btn flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all select-none bg-blue-600 text-white shadow-md shadow-blue-200 active-tab';
-        } else {
-          btn.className = 'tab-btn flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all select-none bg-white text-gray-600 border border-gray-200 hover:bg-gray-100';
-        }
-      });
-    }
-
-    // 監聽滾動以自動切換標籤 (Scroll Spy)
-    window.addEventListener('scroll', () => {
-      const scrollPosition = window.scrollY + 200;
-      let currentActiveDate = itineraryData[0].date;
-
-      for (let i = itineraryData.length - 1; i >= 0; i--) {
-        const section = document.getElementById(`day-${itineraryData[i].date}`);
-        if (section && section.offsetTop <= scrollPosition) {
-          currentActiveDate = itineraryData[i].date;
-          break;
-        }
-      }
-
-      // 如果當前作用的標籤不是記錄的那個，就更新它
-      const currentActiveBtn = document.querySelector('.active-tab');
-      if (currentActiveBtn && currentActiveBtn.getAttribute('data-date') !== currentActiveDate) {
-        updateActiveTab(currentActiveDate);
-      }
-    });
-
-    // 標籤列滑鼠拖曳邏輯
-    let isDragging = false;
-    let startX;
-    let scrollLeft;
-
-    tabsContainer.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      tabsContainer.classList.add('active');
-      startX = e.pageX - tabsContainer.offsetLeft;
-      scrollLeft = tabsContainer.scrollLeft;
-    });
-
-    tabsContainer.addEventListener('mouseleave', () => {
-      isDragging = false;
-    });
-
-    tabsContainer.addEventListener('mouseup', () => {
-      isDragging = false;
-    });
-
-    tabsContainer.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      e.preventDefault();
-      const x = e.pageX - tabsContainer.offsetLeft;
-      const walk = (x - startX) * 2; // 滑動速度
-      tabsContainer.scrollLeft = scrollLeft - walk;
-    });
-
-    // 啟動渲染
-    renderApp();
-
-  </script>
-</body>
-</html>
+        // 標籤
