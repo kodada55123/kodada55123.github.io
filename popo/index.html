@@ -6,7 +6,7 @@
   <title>胡志明市之旅</title>
   <!-- 引入 Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- 引入 Lucide Icons (更換為較穩定的 jsdelivr CDN) -->
+  <!-- 引入 Lucide Icons -->
   <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
   <style>
     /* 隱藏捲軸但保留滾動功能 */
@@ -18,7 +18,7 @@
       scrollbar-width: none;
     }
     html {
-      background-color: #e5e7eb;
+      /* 讓切換日期時的滑動更加平滑 */
       scroll-behavior: smooth;
     }
     /* 避免拖曳時選取文字 */
@@ -28,53 +28,59 @@
     }
   </style>
 </head>
-<body class="min-h-screen bg-gray-200 flex justify-center font-sans text-gray-800">
+<!-- 全新漸層背景：從天空藍過渡到紫羅蘭，增添旅遊度假感 -->
+<body class="min-h-screen bg-gradient-to-br from-sky-100 via-blue-200 to-indigo-200 flex justify-center font-sans text-gray-800 py-0 sm:py-6">
 
-  <!-- 模擬手機外框與容器 -->
-  <div class="w-full sm:max-w-[414px] bg-gray-50 min-h-screen shadow-2xl relative flex flex-col overflow-hidden">
+  <!-- 模擬手機外框與容器：加入更強的立體陰影與圓角(在電腦版顯示時) -->
+  <div class="w-full sm:max-w-[414px] bg-slate-50 min-h-screen sm:min-h-[90vh] sm:rounded-[2.5rem] shadow-[0_20px_50px_rgba(29,78,216,0.15)] relative flex flex-col overflow-hidden border-4 border-white/40">
     
-    <!-- 手機版 Header -->
-    <header class="bg-white px-6 pt-10 pb-5 rounded-b-[2rem] shadow-sm relative z-40">
-      <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
-        <i data-lucide="plane" class="text-blue-600 w-7 h-7"></i>
-        胡志明市之旅
-      </h1>
-      <p class="text-sm text-gray-500 mt-1 ml-9">4/16 - 4/20 旅遊行程表</p>
-    </header>
+    <!-- 頂部固定區域 (包含 Header 與大項目標籤) -->
+    <div class="sticky top-0 z-40 w-full flex flex-col">
+      
+      <!-- 全新設計的手機版 Header：漸層背景、裝飾圖示與精緻化的字體 -->
+      <header class="bg-gradient-to-r from-blue-600 to-indigo-700 px-6 pt-10 pb-6 rounded-b-[2rem] relative z-20 shadow-[0_8px_30px_rgba(37,99,235,0.2)] overflow-hidden">
+        <!-- 裝飾用背景圖示 (半透明大圖示) -->
+        <i data-lucide="map" class="absolute -right-6 -bottom-6 w-32 h-32 text-white opacity-10 rotate-12 pointer-events-none"></i>
+        
+        <h1 class="text-2xl font-extrabold text-white flex items-center gap-2 relative z-10 tracking-wide">
+          <!-- 圖示縮小，顏色改為淺藍色點綴 -->
+          <i data-lucide="plane" class="text-blue-200 w-5 h-5"></i>
+          胡志明市之旅
+        </h1>
+        <p class="text-sm text-blue-100/90 mt-1.5 ml-7 relative z-10 font-medium">4/16 - 4/20 旅遊行程表</p>
+      </header>
 
-    <!-- 橫向滑動的日期標籤 (Sticky 置頂) -->
-    <div class="sticky top-0 z-30 bg-gray-50/95 backdrop-blur-md pt-5 pb-3 border-b border-gray-200/60 shadow-sm">
-      <div id="tabs-container" class="flex overflow-x-auto hide-scrollbar px-6 gap-3 cursor-grab active:cursor-grabbing no-select" style="touch-action: pan-x;">
-        <!-- 標籤將由 JS 動態生成 -->
+      <!-- 橫向滑動的日期標籤 (毛玻璃效果) -->
+      <div class="bg-slate-50/90 backdrop-blur-md pt-5 pb-3 border-b border-gray-200/50 relative z-10">
+        <div id="tabs-container" class="flex overflow-x-auto hide-scrollbar px-6 gap-3 cursor-grab active:cursor-grabbing no-select pb-1" style="touch-action: pan-x;">
+          <!-- 標籤將由 JS 動態生成 -->
+        </div>
       </div>
     </div>
 
     <!-- 主要內容區 - 單欄手機版時間軸 -->
     <main class="flex-1 px-6 py-6 z-10" id="main-container">
-      <!-- 如果有錯誤會顯示在這裡，預設為載入中 -->
+      <!-- 預設載入畫面 -->
       <div class="text-center text-gray-400 py-10" id="loading-text">
+        <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-blue-500"></i>
         行程載入中...
       </div>
     </main>
 
     <!-- 頁尾 -->
-    <div class="text-center pb-12 pt-6 text-gray-400 text-xs flex flex-col items-center gap-2 z-10">
-      <i data-lucide="plane" class="w-5 h-5 text-gray-300"></i>
-      <p>祝你有一趟美好的胡志明市之旅！</p>
+    <div class="text-center pb-10 pt-4 text-gray-400 text-xs flex flex-col items-center gap-2 z-10">
+      <i data-lucide="plane" class="w-4 h-4 text-gray-300"></i>
+      <p>祝你有趟美好的胡志明之旅！</p>
     </div>
   </div>
 
   <script>
-    // 確保整個網頁的 DOM 都載入完成後才執行 JS
     document.addEventListener('DOMContentLoaded', () => {
-      
       try {
         // --- 資料設定區 ---
         const itineraryData = [
           {
-            date: "4/16",
-            day: "四",
-            title: "抵達與市區探索",
+            date: "4/16", day: "四", title: "抵達與市區探索",
             items: [
               { time: "07:45 ~ 12:00", title: "抵達市區", category: "transport", notes: "搭機抵達並使用 Grab 叫車回市區" },
               { time: "12:00", title: "入住飯店：Express by M Village Nguyễn Du", category: "hotel", notes: "先寄放行李或辦理入住", mapUrl: "https://maps.app.goo.gl/V9RmXux7AEqBgzAR8" },
@@ -90,9 +96,7 @@
             ]
           },
           {
-            date: "4/17",
-            day: "五",
-            title: "郊區一日遊",
+            date: "4/17", day: "五", title: "郊區一日遊",
             items: [
               { title: "早餐：超商隨意吃", category: "food" },
               { time: "07:30 ~ 17:30", title: "Klook 包團：古芝地道 & 湄公河", category: "map", notes: "一日遊行程", mapUrl: "https://www.klook.com/zh-TW/activity/29990-cu-chi-tunnels-ben-tre-ham-luong-day-tour-ho-chi-minh/" },
@@ -104,9 +108,7 @@
             ]
           },
           {
-            date: "4/18",
-            day: "六",
-            title: "換飯店與放鬆日",
+            date: "4/18", day: "六", title: "換飯店與放鬆日",
             items: [
               { title: "入住新飯店：Vien Dong Hotel", category: "hotel", notes: "靠近 Bui Vien Walking Street", mapUrl: "https://maps.app.goo.gl/EnhgpSQ2mu8f2Rwq7" },
               { title: "早午餐：Meat & Meet BBQ", category: "food", notes: "Lê Thị Riêng，east推薦", mapUrl: "https://maps.app.goo.gl/U1FSKvRBSgmyQKhR9" },
@@ -117,9 +119,7 @@
             ]
           },
           {
-            date: "4/19",
-            day: "日",
-            title: "歷史文化與購物",
+            date: "4/19", day: "日", title: "歷史文化與購物",
             items: [
               { time: "10:00 ~ 23:00", title: "早午餐：Cocotte 法式料理", category: "food", notes: "品嚐平價法餐", mapUrl: "https://maps.app.goo.gl/NzBkD8TuqfZhVo8y6" },
               { title: "景點：戰爭遺跡博物館", category: "attraction", mapUrl: "https://maps.app.goo.gl/rED2vtYxNNNVCCSa7" },
@@ -131,9 +131,7 @@
             ]
           },
           {
-            date: "4/20",
-            day: "一",
-            title: "採買與回程",
+            date: "4/20", day: "一", title: "採買與回程",
             items: [
               { title: "採買伴手禮：Maison Marou Flagship Saigon", category: "shopping", notes: "越南精品巧克力專賣店", mapUrl: "https://maps.app.goo.gl/Uqs9j9xXKm4jLE6W9" },
               { time: "13:00", title: "前往機場", category: "transport" },
@@ -141,9 +139,7 @@
             ]
           },
           {
-            date: "推薦",
-            day: "名單",
-            title: "精選推薦口袋名單",
+            date: "推薦", day: "名單", title: "精選推薦口袋名單",
             items: [
               { title: "推薦餐廳", category: "food", notes: "行程備用或聚餐好去處", mapUrl: "https://maps.app.goo.gl/AdeyqkWKF7jgZMAn9" },
               { title: "推薦按摩", category: "spa", notes: "隨時想放鬆的備用選擇", mapUrl: "https://maps.app.goo.gl/FYkQn1sWNSZfMnNC7" },
@@ -168,7 +164,6 @@
           default: { icon: "map-pin", color: "text-gray-500", bg: "bg-gray-100" }
         };
 
-        // --- 渲染畫面區 ---
         const tabsContainer = document.getElementById('tabs-container');
         const mainContainer = document.getElementById('main-container');
 
@@ -176,12 +171,16 @@
         let mainHtml = '';
 
         itineraryData.forEach((day, dayIndex) => {
-          // 渲染 Tab
+          // 渲染 Tab (選中狀態換成漸層色)
+          const activeClass = dayIndex === 0 
+            ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/30 active-tab' 
+            : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50';
+            
           tabsHtml += `
             <button 
               data-date="${day.date}"
               onclick="scrollToDate('${day.date}')"
-              class="tab-btn flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all select-none ${dayIndex === 0 ? 'bg-blue-600 text-white shadow-md shadow-blue-200 active-tab' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-100'}"
+              class="tab-btn flex-shrink-0 px-5 py-2 rounded-full text-sm font-medium transition-all select-none ${activeClass}"
             >
               ${day.date} (${day.day})
             </button>
@@ -205,7 +204,7 @@
             let notesHtml = '';
             if (item.notes) {
               notesHtml = `
-                <p class="text-sm text-gray-500 mb-4 bg-gray-50 p-2.5 rounded-lg">
+                <p class="text-[13px] text-gray-500 mb-3 bg-slate-50 p-2.5 rounded-lg border border-gray-50">
                   ${item.notes}
                 </p>
               `;
@@ -218,7 +217,7 @@
                   href="${item.mapUrl}" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg transition-colors w-full justify-center mt-2"
+                  class="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-lg transition-colors w-full justify-center mt-1"
                 >
                   <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
                   開啟地圖導航
@@ -229,15 +228,15 @@
 
             itemsHtml += `
               <div class="relative flex items-start">
-                <!-- 時間軸點點圖示 -->
-                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-gray-50 shrink-0 ${config.bg} ${config.color} absolute left-0 top-0">
-                  <i data-lucide="${config.icon}" class="w-4 h-4"></i>
+                <!-- 時間軸點點圖示：縮小尺寸 w-8 h-8，讓它更精緻 -->
+                <div class="flex items-center justify-center w-8 h-8 rounded-full border-[3px] border-slate-50 shrink-0 ${config.bg} ${config.color} absolute left-0 top-0 z-10">
+                  <i data-lucide="${config.icon}" class="w-3.5 h-3.5"></i>
                 </div>
 
-                <!-- 卡片內容 -->
-                <div class="ml-auto w-[calc(100%-3.5rem)] p-4 rounded-2xl bg-white border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] relative z-0">
+                <!-- 卡片內容：調整間距配合縮小的圖示 -->
+                <div class="ml-auto w-[calc(100%-2.75rem)] p-4 rounded-2xl bg-white border border-gray-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)] relative z-0">
                   ${timeHtml}
-                  <h3 class="text-base font-bold text-gray-800 leading-snug mb-2">${item.title}</h3>
+                  <h3 class="text-[15px] font-bold text-gray-800 leading-snug mb-2">${item.title}</h3>
                   ${notesHtml}
                   ${mapHtml}
                 </div>
@@ -249,15 +248,15 @@
             <section id="day-${day.date}" class="mb-10">
               <!-- 日期標題 -->
               <div class="mb-6 flex items-center gap-3">
-                <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-sm font-bold tracking-wider">
+                <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg text-sm font-bold tracking-wider">
                   ${day.date}
                 </span>
-                <h2 class="text-xl font-bold text-gray-900">
+                <h2 class="text-xl font-extrabold text-gray-900">
                   ${day.title}
                 </h2>
               </div>
-              <!-- 時間軸列表 -->
-              <div class="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-gray-200 before:via-gray-300 before:to-gray-200">
+              <!-- 時間軸列表：調整中心線的位置以對齊縮小的圓圈 -->
+              <div class="space-y-6 relative before:absolute before:inset-0 before:ml-4 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-gray-200 before:via-gray-300 before:to-gray-200">
                 ${itemsHtml}
               </div>
             </section>
@@ -267,18 +266,16 @@
         tabsContainer.innerHTML = tabsHtml;
         mainContainer.innerHTML = mainHtml;
 
-        // 初始化 Lucide 圖示 (加了防呆檢查)
+        // 初始化 Lucide 圖示
         if (window.lucide) {
           lucide.createIcons();
         }
 
         // --- 互動邏輯區 ---
-
-        // 將 scrollToDate 綁定到 window 讓 HTML 上的 onclick 抓得到
         window.scrollToDate = function(date) {
           const element = document.getElementById(`day-${date}`);
           if (element) {
-            const headerOffset = 140; 
+            const headerOffset = 180; // 適應新的 header 高度
             const elementPosition = element.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
       
@@ -293,15 +290,15 @@
         function updateActiveTab(activeDate) {
           document.querySelectorAll('.tab-btn').forEach(btn => {
             if (btn.getAttribute('data-date') === activeDate) {
-              btn.className = 'tab-btn flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all select-none bg-blue-600 text-white shadow-md shadow-blue-200 active-tab';
+              btn.className = 'tab-btn flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all select-none bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/30 active-tab';
             } else {
-              btn.className = 'tab-btn flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all select-none bg-white text-gray-600 border border-gray-200 hover:bg-gray-100';
+              btn.className = 'tab-btn flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all select-none bg-white text-gray-600 border border-gray-200 hover:bg-gray-50';
             }
           });
         }
 
         window.addEventListener('scroll', () => {
-          const scrollPosition = window.scrollY + 200;
+          const scrollPosition = window.scrollY + 250;
           let currentActiveDate = itineraryData[0].date;
 
           for (let i = itineraryData.length - 1; i >= 0; i--) {
@@ -341,12 +338,11 @@
 
       } catch (error) {
         console.error(error);
-        // 如果執行失敗，顯示紅色錯誤訊息在畫面上
         document.getElementById('main-container').innerHTML = `
           <div class="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl text-sm">
             <strong>糟糕，網頁載入發生錯誤：</strong><br/>
             ${error.message}<br/><br/>
-            請截圖此畫面或確認瀏覽器是否阻擋了 JavaScript。
+            請確認網路狀態或稍後重整。
           </div>
         `;
       }
